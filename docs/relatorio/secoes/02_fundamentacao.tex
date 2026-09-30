@@ -16,7 +16,7 @@ Classes finitas são apresentadas como rótulos agrupados nos diagramas, mas sã
 
 O simulador inicia no $\varepsilon$-fecho do estado inicial. Para cada símbolo da cadeia, aplica a operação \textit{move} sobre os estados ativos e, em seguida, calcula novamente o $\varepsilon$-fecho. Ao fim da cadeia, a aceitação ocorre quando pelo menos um estado ativo pertence ao conjunto de estados finais.
 
-A implementação utiliza \texttt{EPSILON = ""} apenas como marcador interno de transições vazias. A cadeia vazia continua sendo uma entrada distinta do símbolo lógico $\varepsilon$.
+A implementação utiliza \texttt{EPSILON = \textquotedbl{}\textquotedbl{}} apenas como marcador interno de transições vazias. A cadeia vazia continua sendo uma entrada distinta do símbolo lógico $\varepsilon$.
 
 \section{Critério de validação}
 

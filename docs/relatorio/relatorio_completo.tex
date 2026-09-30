@@ -116,7 +116,7 @@ Classes finitas são apresentadas como rótulos agrupados nos diagramas, mas sã
 
 O simulador inicia no $\varepsilon$-fecho do estado inicial. Para cada símbolo da cadeia, aplica a operação \textit{move} sobre os estados ativos e, em seguida, calcula novamente o $\varepsilon$-fecho. Ao fim da cadeia, a aceitação ocorre quando pelo menos um estado ativo pertence ao conjunto de estados finais.
 
-A implementação utiliza \texttt{EPSILON = ""} apenas como marcador interno de transições vazias. A cadeia vazia continua sendo uma entrada distinta do símbolo lógico $\varepsilon$.
+A implementação utiliza \texttt{EPSILON = \textquotedbl{}\textquotedbl{}} apenas como marcador interno de transições vazias. A cadeia vazia continua sendo uma entrada distinta do símbolo lógico $\varepsilon$.
 
 \section{Critério de validação}
 
@@ -256,7 +256,7 @@ $\varepsilon$ & Rejeita & Não pertence à linguagem definida. \\
 \end{tabular}
 \end{center}
 \subsection{Casos-limite}
-Os casos de fronteira selecionados são: \texttt{a}, $\varepsilon$, \texttt{a\_}, \texttt{a\_\_b}.
+Os casos de fronteira selecionados são: \texttt{a}, $\varepsilon$, \texttt{nome\_}, \texttt{nome\_\_aluno}.
 \medskip
 O propósito desses casos é explorar as menores cadeias válidas, limites superiores/inferiores e formas quase válidas que poderiam ser aceitas por uma regra permissiva demais.
 \subsection{Observação sobre palavras reservadas}
@@ -304,20 +304,23 @@ Cadeia & Esperado & Interpretação \\
 \texttt{0} & Aceita & Pertence à linguagem definida. \\
 \texttt{1} & Aceita & Pertence à linguagem definida. \\
 \texttt{7} & Aceita & Pertence à linguagem definida. \\
+\texttt{9} & Aceita & Pertence à linguagem definida. \\
 \texttt{10} & Aceita & Pertence à linguagem definida. \\
+\texttt{20} & Aceita & Pertence à linguagem definida. \\
 \texttt{2026} & Aceita & Pertence à linguagem definida. \\
-\texttt{999999} & Aceita & Pertence à linguagem definida. \\
+\texttt{999} & Aceita & Pertence à linguagem definida. \\
 $\varepsilon$ & Rejeita & Não pertence à linguagem definida. \\
 \texttt{00} & Rejeita & Não pertence à linguagem definida. \\
 \texttt{01} & Rejeita & Não pertence à linguagem definida. \\
 \texttt{007} & Rejeita & Não pertence à linguagem definida. \\
-\texttt{12.5} & Rejeita & Não pertence à linguagem definida. \\
-\texttt{-10} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{0123} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{-1} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{1.5} & Rejeita & Não pertence à linguagem definida. \\
 \bottomrule
 \end{tabular}
 \end{center}
 \subsection{Casos-limite}
-Os casos de fronteira selecionados são: \texttt{0}, \texttt{1}, \texttt{00}, \texttt{01}, $\varepsilon$.
+Os casos de fronteira selecionados são: \texttt{0}, \texttt{00}, \texttt{01}, $\varepsilon$.
 \medskip
 O propósito desses casos é explorar as menores cadeias válidas, limites superiores/inferiores e formas quase válidas que poderiam ser aceitas por uma regra permissiva demais.
 
@@ -367,16 +370,16 @@ Cadeia & Esperado & Interpretação \\
 \texttt{10.25} & Aceita & Pertence à linguagem definida. \\
 \texttt{2026.75} & Aceita & Pertence à linguagem definida. \\
 \texttt{00.5} & Rejeita & Não pertence à linguagem definida. \\
-\texttt{09.5} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{01.5} & Rejeita & Não pertence à linguagem definida. \\
 \texttt{.5} & Rejeita & Não pertence à linguagem definida. \\
-\texttt{1.} & Rejeita & Não pertence à linguagem definida. \\
-\texttt{1.5.2} & Rejeita & Não pertence à linguagem definida. \\
-\texttt{-10.5} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{5.} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{1.2.3} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{-9.5} & Rejeita & Não pertence à linguagem definida. \\
 \bottomrule
 \end{tabular}
 \end{center}
 \subsection{Casos-limite}
-Os casos de fronteira selecionados são: \texttt{0.0}, \texttt{1.0}, \texttt{00.5}, \texttt{.5}, \texttt{1.}.
+Os casos de fronteira selecionados são: \texttt{0.5}, \texttt{5.}, \texttt{.5}, \texttt{00.5}.
 \medskip
 O propósito desses casos é explorar as menores cadeias válidas, limites superiores/inferiores e formas quase válidas que poderiam ser aceitas por uma regra permissiva demais.
 
@@ -419,23 +422,23 @@ Os diagramas JFLAP e Mermaid correspondentes estão em \texttt{docs/diagramas/}E
 \toprule
 Cadeia & Esperado & Interpretação \\
 \midrule
-\texttt{1e3} & Aceita & Pertence à linguagem definida. \\
-\texttt{10e2} & Aceita & Pertence à linguagem definida. \\
-\texttt{0e5} & Aceita & Pertence à linguagem definida. \\
+\texttt{0e0} & Aceita & Pertence à linguagem definida. \\
+\texttt{1e10} & Aceita & Pertence à linguagem definida. \\
+\texttt{9E9} & Aceita & Pertence à linguagem definida. \\
 \texttt{1.5e3} & Aceita & Pertence à linguagem definida. \\
-\texttt{9.5E-2} & Aceita & Pertence à linguagem definida. \\
-\texttt{10.25e+4} & Aceita & Pertence à linguagem definida. \\
-$\varepsilon$ & Rejeita & Não pertence à linguagem definida. \\
+\texttt{12.25E-2} & Aceita & Pertence à linguagem definida. \\
+\texttt{2026.75e+10} & Aceita & Pertence à linguagem definida. \\
+\texttt{e10} & Rejeita & Não pertence à linguagem definida. \\
 \texttt{1e} & Rejeita & Não pertence à linguagem definida. \\
-\texttt{1e+} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{1.e3} & Rejeita & Não pertence à linguagem definida. \\
 \texttt{.5e2} & Rejeita & Não pertence à linguagem definida. \\
-\texttt{01e3} & Rejeita & Não pertence à linguagem definida. \\
-\texttt{1.5.2e3} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{01e2} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{1.2e3.4} & Rejeita & Não pertence à linguagem definida. \\
 \bottomrule
 \end{tabular}
 \end{center}
 \subsection{Casos-limite}
-Os casos de fronteira selecionados são: \texttt{1e0}, \texttt{0e1}, \texttt{1e}, \texttt{1e+}, \texttt{01e3}.
+Os casos de fronteira selecionados são: \texttt{0e0}, \texttt{1e}, \texttt{1.e3}, \texttt{01e2}.
 \medskip
 O propósito desses casos é explorar as menores cadeias válidas, limites superiores/inferiores e formas quase válidas que poderiam ser aceitas por uma regra permissiva demais.
 
@@ -477,24 +480,23 @@ Os diagramas JFLAP e Mermaid correspondentes estão em \texttt{docs/diagramas/}E
 \toprule
 Cadeia & Esperado & Interpretação \\
 \midrule
-\texttt{""} & Aceita & Pertence à linguagem definida. \\
-\texttt{"Andrey"} & Aceita & Pertence à linguagem definida. \\
-\texttt{"abc 123"} & Aceita & Pertence à linguagem definida. \\
-\texttt{"a\_b.c"} & Aceita & Pertence à linguagem definida. \\
-\texttt{"hello!"} & Aceita & Pertence à linguagem definida. \\
-\texttt{"12:30"} & Aceita & Pertence à linguagem definida. \\
+\texttt{\textquotedbl{}\textquotedbl{}} & Aceita & Pertence à linguagem definida. \\
+\texttt{\textquotedbl{}Andrey\textquotedbl{}} & Aceita & Pertence à linguagem definida. \\
+\texttt{\textquotedbl{}abc 123\textquotedbl{}} & Aceita & Pertence à linguagem definida. \\
+\texttt{\textquotedbl{}a\_b.c\textquotedbl{}} & Aceita & Pertence à linguagem definida. \\
+\texttt{\textquotedbl{}hello!\textquotedbl{}} & Aceita & Pertence à linguagem definida. \\
+\texttt{\textquotedbl{}12:30\textquotedbl{}} & Aceita & Pertence à linguagem definida. \\
 $\varepsilon$ & Rejeita & Não pertence à linguagem definida. \\
-\texttt{"abc} & Rejeita & Não pertence à linguagem definida. \\
-\texttt{abc"} & Rejeita & Não pertence à linguagem definida. \\
-\texttt{"a"b"} & Rejeita & Não pertence à linguagem definida. \\
-\texttt{"a\textbackslash\{\}b"} & Rejeita & Não pertence à linguagem definida. \\
-\texttt{"linha
-} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{\textquotedbl{}abc} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{abc\textquotedbl{}} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{\textquotedbl{}a\textquotedbl{}b\textquotedbl{}} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{\textquotedbl{}a\textbackslash{}b\textquotedbl{}} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{\textquotedbl{}linha} + quebra de linha & Rejeita & Não pertence à linguagem definida. \\
 \bottomrule
 \end{tabular}
 \end{center}
 \subsection{Casos-limite}
-Os casos de fronteira selecionados são: \texttt{""}, \texttt{"a"}, \texttt{"abc}, \texttt{"a\textbackslash\{\}b"}.
+Os casos de fronteira selecionados são: \texttt{\textquotedbl{}\textquotedbl{}}, $\varepsilon$, \texttt{\textquotedbl{}abc}, \texttt{\textquotedbl{}a\textbackslash{}b\textquotedbl{}}.
 \medskip
 O propósito desses casos é explorar as menores cadeias válidas, limites superiores/inferiores e formas quase válidas que poderiam ser aceitas por uma regra permissiva demais.
 \subsection{Limitação específica}
@@ -546,12 +548,12 @@ Cadeia & Esperado & Interpretação \\
 \texttt{14:59} & Aceita & Pertence à linguagem definida. \\
 \texttt{23:00} & Aceita & Pertence à linguagem definida. \\
 \texttt{23:59} & Aceita & Pertence à linguagem definida. \\
-$\varepsilon$ & Rejeita & Não pertence à linguagem definida. \\
 \texttt{24:00} & Rejeita & Não pertence à linguagem definida. \\
 \texttt{12:60} & Rejeita & Não pertence à linguagem definida. \\
 \texttt{2:30} & Rejeita & Não pertence à linguagem definida. \\
 \texttt{14:5} & Rejeita & Não pertence à linguagem definida. \\
 \texttt{99:99} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{14:30:00} & Rejeita & Não pertence à linguagem definida. \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -982,9 +984,9 @@ No. & Origem & Símbolo & Destino \\
 \end{longtable}
 
 
-\chapter*{Referências}
-\addcontentsline{toc}{chapter}{Referências}
+\renewcommand{\bibname}{Referências}
 \begin{thebibliography}{9}
+\addcontentsline{toc}{chapter}{Referências}
 \bibitem{atividade}
 SOUZA, Daniel Leal. \textit{Atividade Prática AV1: Implementação de Expressões Regulares e AFN$\varepsilon$}. Material da disciplina de Linguagens Formais e Autômatos, 2026.
 

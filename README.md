@@ -40,6 +40,8 @@ MiniLang-MiniLexer/
 │   ├── validate_er01.py … validate_er06.py
 │   └── validate_all.py
 ├── docs/
+│   ├── apresentacao/
+│   │   └── apresentacao.pdf      # slides da apresentação
 │   ├── explicacoes/              # ficha explicativa de cada ER (ER-01.md … ER-06.md)
 │   ├── diagramas/
 │   │   └── ER-01/ … ER-06/
@@ -178,6 +180,10 @@ As contribuições da equipe estão registradas em `CONTRIBUICOES.md`:
 ## Relatório técnico
 
 O relatório técnico está em `docs/relatorio/`. O arquivo `main.tex` é o documento principal para edição no Overleaf; `relatorio_completo.tex` é a versão consolidada em um único arquivo e `relatorio.pdf` é a versão compilada incluída no pacote.
+
+## Apresentação
+
+Os slides da apresentação estão em `docs/apresentacao/apresentacao.pdf`.
 
 ## Estado atual
 
