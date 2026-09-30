@@ -2746,10 +2746,10 @@ Na versão atual, cada ER possui dois artefatos de diagrama no repositório:
 
 ```text
 docs/diagramas/ER-XX/ER-XX.jff
-docs/diagramas/ER-XX/ER-XX_mermaid.txt
+docs/diagramas/ER-XX/ER-XX.md
 ```
 
-O `.jff` é a representação para JFLAP e o `.txt` contém o diagrama Mermaid. Ambos são derivados da mesma tabela canônica de transições.
+O `.jff` é a representação para JFLAP e o `.md` contém o diagrama Mermaid. Ambos são derivados da mesma tabela canônica de transições. No `.jff`, cada classe é expandida em transições de um caractere (por exemplo, `D` vira dez transições, de `0` a `9`), porque o JFLAP 7.1 não interpreta rótulos como `[0-9]`; as contagens Thompson se referem às transições agrupadas.
 
 ## 34.4 Simulação
 

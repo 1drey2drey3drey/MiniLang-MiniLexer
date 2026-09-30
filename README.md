@@ -151,7 +151,7 @@ Os rótulos anteriores, como `[A-Za-z]` e `[0-9]`, produziam resultados incorret
 Para repetir essa verificação, com JDK 11 ou superior e o arquivo JAR do JFLAP:
 
 ```bash
-python tests/validate_jflap_runtime.py "C:/Users/igorv/Downloads/JFLAP7.1.jar"
+python tests/validate_jflap_runtime.py "caminho/para/JFLAP7.1.jar"
 ```
 
 Esse comando usa o leitor XML e o simulador do JFLAP sem abrir a interface gráfica. A suíte `pytest` também verifica a linguagem diretamente dos arquivos `.jff`, sem depender do Java.

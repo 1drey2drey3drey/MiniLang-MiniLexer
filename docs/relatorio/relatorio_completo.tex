@@ -54,7 +54,7 @@
 
 \pagenumbering{roman}
 \chapter*{Resumo}
-O presente relatório descreve o desenvolvimento do \textbf{MiniLang / MiniLexer}, uma aplicação de análise léxica construída para relacionar Expressões Regulares, autômatos finitos não determinísticos com transições vazias (AFN$\varepsilon$) e uma implementação computacional funcional. O projeto define seis Expressões Regulares principais para identificadores, inteiros, decimais, notação científica, strings e horários. Para cada expressão foram especificados o alfabeto, a linguagem, a forma formal, a sintaxe em Python, o AFN$\varepsilon$ de Thompson e casos de teste. A implementação inclui um simulador genérico de AFN$\varepsilon$ e um lexer com prioridade lexical, maior lexema, tratamento de comentários, palavras reservadas, operadores, delimitadores e erros com linha e coluna. Na execução final, a suíte automatizada apresentou 129 testes aprovados. As validações cruzadas AFN$\varepsilon$ $\times$ regex não apresentaram divergências nos espaços de busca reduzidos definidos para as seis ERs, e a validação estrutural confirmou 6/6 AFN$\varepsilon$ em Python e 6/6 arquivos JFLAP contra as tabelas canônicas.
+O presente relatório descreve o desenvolvimento do \textbf{MiniLang / MiniLexer}, uma aplicação de análise léxica construída para relacionar Expressões Regulares, autômatos finitos não determinísticos com transições vazias (AFN$\varepsilon$) e uma implementação computacional funcional. O projeto define seis Expressões Regulares principais para identificadores, inteiros, decimais, notação científica, strings e horários. Para cada expressão foram especificados o alfabeto, a linguagem, a forma formal, a sintaxe em Python, o AFN$\varepsilon$ de Thompson e casos de teste. A implementação inclui um simulador genérico de AFN$\varepsilon$ e um lexer com prioridade lexical, maior lexema, tratamento de comentários, palavras reservadas, operadores, delimitadores e erros com linha e coluna. Na execução final, a suíte automatizada apresentou 135 testes aprovados. As validações cruzadas AFN$\varepsilon$ $\times$ regex não apresentaram divergências nos espaços de busca reduzidos definidos para as seis ERs, e a validação estrutural confirmou 6/6 AFN$\varepsilon$ em Python e 6/6 arquivos JFLAP contra as tabelas canônicas.
 
 \textbf{Palavras-chave:} Expressões Regulares; AFN$\varepsilon$; Thompson; análise léxica; MiniLang; MiniLexer.
 
@@ -110,7 +110,7 @@ A validação em Python utiliza \texttt{re.fullmatch()}, de modo que a cadeia in
 
 Todos os seis AFN$\varepsilon$ usam a mesma convenção de Thompson definida no projeto: um átomo gera dois estados e uma transição rotulada; concatenações são ligadas por transições $\varepsilon$; uniões usam novos estados inicial e final com transições $\varepsilon$; e o fecho de Kleene usa novas ligações $\varepsilon$ para entrada, saída e retorno.
 
-Classes finitas são apresentadas como rótulos agrupados nos diagramas, mas são expandidas para símbolos individuais no simulador Python. Assim, por exemplo, $D$ representa o conjunto $\{0,1,\ldots,9\}$.
+Classes finitas são apresentadas como rótulos agrupados nos diagramas, mas são expandidas para símbolos individuais no simulador Python. Assim, por exemplo, $D$ representa o conjunto $\{0,1,\ldots,9\}$. Nos arquivos \texttt{.jff}, cada classe também é expandida em transições de um caractere, pois o JFLAP 7.1 não interpreta rótulos como \texttt{[0-9]}; as contagens de Thompson se referem às transições agrupadas.
 
 \section{\texorpdfstring{Simulação de AFN$\varepsilon$}{Simulação de AFN epsilon}}
 
@@ -608,7 +608,7 @@ O arquivo \texttt{examples/valido.min} demonstra declarações, números, string
 
 \section{Suíte de testes}
 
-A suíte atual possui \textbf{129 testes coletados}, todos aprovados na execução final com \texttt{pytest -q}.
+A suíte atual possui \textbf{135 testes coletados}, todos aprovados na execução final com \texttt{pytest -q}.
 
 Os testes cobrem palavras reservadas, identificadores, números, horários, strings, comentários, operadores, maior lexema, erros léxicos, linha/coluna, arquivos de exemplo e execução da interface.
 
@@ -689,7 +689,7 @@ Optou-se por não acrescentar funcionalidades apenas para tornar as ERs artifici
 
 \section{Organização do projeto}
 
-A versão atual do repositório contém código-fonte, testes, exemplos, documentação, declaração de IA, registro de contribuições e diagramas. Cada ER possui um arquivo \texttt{.jff} para JFLAP e um arquivo \texttt{.md} com Mermaid.
+A versão atual do repositório contém código-fonte, testes, exemplos, documentação, declaração de IA, registro de contribuições e diagramas. Cada ER possui um arquivo \texttt{.jff} para JFLAP e um arquivo \texttt{.md} com Mermaid. Os seis arquivos \texttt{.jff} foram carregados e simulados pelo próprio JFLAP 7.1 (\texttt{tests/validate\_jflap\_runtime.py}) em 40.044 casos, sem divergências.
 
 \section{Reprodutibilidade}
 
@@ -723,7 +723,7 @@ As contribuições de cada integrante estão registradas em \texttt{CONTRIBUICOE
 
 O MiniLang / MiniLexer atingiu uma implementação funcional coerente com o escopo definido para um analisador léxico. O projeto contém seis Expressões Regulares principais, seis construções de AFN$\varepsilon$, simulador genérico, lexer com regras de prioridade e maior lexema, tratamento de erros e suíte de testes integrada.
 
-A verificação final registrou 129 testes automatizados aprovados. As seis validações cruzadas AFN$\varepsilon$ $\times$ regex Python não apresentaram divergências nos alfabetos reduzidos definidos, e a validação estrutural confirmou 6/6 implementações Python e 6/6 arquivos JFLAP contra as tabelas canônicas.
+A verificação final registrou 135 testes automatizados aprovados. As seis validações cruzadas AFN$\varepsilon$ $\times$ regex Python não apresentaram divergências nos alfabetos reduzidos definidos, e a validação estrutural confirmou 6/6 implementações Python e 6/6 arquivos JFLAP contra as tabelas canônicas.
 
 A principal contribuição acadêmica da implementação está na manutenção da correspondência entre a descrição formal e o comportamento computacional. Cada ER é apresentada com sua finalidade, alfabeto, linguagem, notação formal, sintaxe Python, AFN$\varepsilon$, casos dirigidos e limitações, enquanto os testes de integração demonstram como essas regras funcionam em conjunto no MiniLexer.
 

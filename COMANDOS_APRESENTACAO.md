@@ -31,6 +31,16 @@ python .\tests\validate_all.py
 python .\tests\validate_afne_structure.py
 ```
 
+## Validar os `.jff` no simulador do JFLAP (opcional)
+
+Requer JDK 11+ e o JAR do JFLAP 7.1:
+
+```powershell
+python .\tests\validate_jflap_runtime.py "caminho\para\JFLAP7.1.jar"
+```
+
+Resultado esperado: `JFLAP: 40044 casos, 0 divergencias`.
+
 ## Rodar todos os testes do projeto
 
 ```powershell

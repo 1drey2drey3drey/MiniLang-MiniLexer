@@ -10,7 +10,7 @@ A validação em Python utiliza \texttt{re.fullmatch()}, de modo que a cadeia in
 
 Todos os seis AFN$\varepsilon$ usam a mesma convenção de Thompson definida no projeto: um átomo gera dois estados e uma transição rotulada; concatenações são ligadas por transições $\varepsilon$; uniões usam novos estados inicial e final com transições $\varepsilon$; e o fecho de Kleene usa novas ligações $\varepsilon$ para entrada, saída e retorno.
 
-Classes finitas são apresentadas como rótulos agrupados nos diagramas, mas são expandidas para símbolos individuais no simulador Python. Assim, por exemplo, $D$ representa o conjunto $\{0,1,\ldots,9\}$.
+Classes finitas são apresentadas como rótulos agrupados nos diagramas, mas são expandidas para símbolos individuais no simulador Python. Assim, por exemplo, $D$ representa o conjunto $\{0,1,\ldots,9\}$. Nos arquivos \texttt{.jff}, cada classe também é expandida em transições de um caractere, pois o JFLAP 7.1 não interpreta rótulos como \texttt{[0-9]}; as contagens de Thompson se referem às transições agrupadas.
 
 \section{\texorpdfstring{Simulação de AFN$\varepsilon$}{Simulação de AFN epsilon}}
 
