@@ -144,7 +144,19 @@ ER-XX.jff   → arquivo para JFLAP
 ER-XX.md    → representação Mermaid (renderizada diretamente pelo GitHub)
 ```
 
-Os dois arquivos são derivados da mesma tabela canônica de transições. Os rótulos agrupados utilizados na especificação são representados nos `.jff` por classes explícitas, por exemplo `[A-Za-z]`, `[0-9]`, `[1-9]` e `[0-5]`.
+Os dois arquivos são derivados da mesma tabela canônica de transições. Nos `.jff`, cada classe é expandida em transições de um caractere: por exemplo, D corresponde a dez transições, de `0` a `9`. As transições ε usam `<read />`. Os estados e suas posições são preservados; as contagens Thompson da especificação se referem às transições agrupadas, antes dessa expansão.
+
+Os rótulos anteriores, como `[A-Za-z]` e `[0-9]`, produziam resultados incorretos no JFLAP 7.1. Os seis arquivos corrigidos foram carregados e simulados pelo próprio JFLAP 7.1 em **40.044 casos, sem divergências**, incluindo entradas aceitas, rejeitadas, casos-limite, caracteres ASCII e todas as combinações de horário de `00:00` a `99:99`.
+
+Para repetir essa verificação, com JDK 11 ou superior e o arquivo JAR do JFLAP:
+
+```bash
+python tests/validate_jflap_runtime.py "C:/Users/igorv/Downloads/JFLAP7.1.jar"
+```
+
+Esse comando usa o leitor XML e o simulador do JFLAP sem abrir a interface gráfica. A suíte `pytest` também verifica a linguagem diretamente dos arquivos `.jff`, sem depender do Java.
+
+Para testar pela interface, abra um `.jff` em **File → Open** e use **Input → Multiple Run**. Exemplos: ER-01 aceita `valor_total` e rejeita `nome_`; ER-02 aceita `10` e rejeita `01`; ER-03 aceita `0.5` e rejeita `5.`; ER-04 aceita `1.5e3` e rejeita `1e+`; ER-05 aceita `"abc 123"` (incluindo as aspas) e rejeita `abc`; ER-06 aceita `23:59` e rejeita `24:00`. Consulte também o [tutorial oficial de autômatos do JFLAP](https://www.jflap.org/tutorial/fa/createfa/fa.html).
 
 ## Resultados de validação
 

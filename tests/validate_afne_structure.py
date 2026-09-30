@@ -248,19 +248,6 @@ CONSTRUTORES = {
     "ER-06": construir_er06,
 }
 
-# Rótulos explícitos reconhecidos pelo JFLAP para conjuntos finitos.
-JFLAP_LABELS = {
-    "L": "[A-Za-z]",
-    "D": "[0-9]",
-    "N": "[1-9]",
-    "P": ".",
-    "C": "[A-Za-z0-9 _.,!?;:+*/=<>-]",
-    "01": "[01]",
-    "0123": "[0-3]",
-    "012345": "[0-5]",
-}
-
-
 def _expand_expected(spec: dict) -> tuple[set[str], dict[tuple[str, str], frozenset[str]]]:
     alphabet: set[str] = set()
     expanded: dict[tuple[str, str], set[str]] = defaultdict(set)
@@ -333,6 +320,8 @@ def validar_jflap(nome: str, spec: dict) -> list[str]:
         return [f"XML inválido: {exc}"]
 
     root = tree.getroot()
+    if root.tag != "structure" or root.findtext("type") != "fa":
+        erros.append("estrutura JFLAP deve ser do tipo fa")
     automaton = root.find("automaton")
     if automaton is None:
         return ["elemento <automaton> ausente"]
@@ -351,20 +340,24 @@ def validar_jflap(nome: str, spec: dict) -> list[str]:
         erros.append(f"final JFLAP: esperado {{{spec['final']}}}, obtido {sorted(finals)}")
 
     ids_to_names = {state.get("id"): state.get("name") for state in states}
+    if len(ids_to_names) != len(states) or len(actual_names) != len(states):
+        erros.append("estados JFLAP duplicados")
     atual = []
     for transition in automaton.findall("transition"):
         origem = ids_to_names.get(transition.findtext("from"))
         destino = ids_to_names.get(transition.findtext("to"))
         leitura = transition.findtext("read") or ""
+        if transition.find("read") is None or len(leitura) > 1:
+            erros.append(f"rótulo JFLAP deve ser um caractere ou epsilon: {leitura!r}")
         if origem is None or destino is None:
             erros.append("transição referencia estado inexistente")
             continue
         atual.append((origem, leitura, destino))
 
-    esperado = [
-        (origem, "" if simbolo == EPSILON else JFLAP_LABELS.get(simbolo, simbolo), destino)
-        for origem, simbolo, destino in spec["transicoes"]
-    ]
+    _, expandidas = _expand_expected(spec)
+    esperado = [(origem, simbolo, destino)
+                for (origem, simbolo), destinos in expandidas.items()
+                for destino in destinos]
 
     if set(atual) != set(esperado) or len(atual) != len(esperado):
         faltantes = sorted(set(esperado) - set(atual))

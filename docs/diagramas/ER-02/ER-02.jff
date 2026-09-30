@@ -67,7 +67,47 @@
     <transition>
       <from>4</from>
       <to>5</to>
-      <read>[1-9]</read>
+      <read>1</read>
+    </transition>
+    <transition>
+      <from>4</from>
+      <to>5</to>
+      <read>2</read>
+    </transition>
+    <transition>
+      <from>4</from>
+      <to>5</to>
+      <read>3</read>
+    </transition>
+    <transition>
+      <from>4</from>
+      <to>5</to>
+      <read>4</read>
+    </transition>
+    <transition>
+      <from>4</from>
+      <to>5</to>
+      <read>5</read>
+    </transition>
+    <transition>
+      <from>4</from>
+      <to>5</to>
+      <read>6</read>
+    </transition>
+    <transition>
+      <from>4</from>
+      <to>5</to>
+      <read>7</read>
+    </transition>
+    <transition>
+      <from>4</from>
+      <to>5</to>
+      <read>8</read>
+    </transition>
+    <transition>
+      <from>4</from>
+      <to>5</to>
+      <read>9</read>
     </transition>
     <transition>
       <from>5</from>
@@ -75,19 +115,54 @@
       <read />
     </transition>
     <transition>
-      <from>8</from>
-      <to>6</to>
-      <read />
-    </transition>
-    <transition>
-      <from>8</from>
-      <to>9</to>
-      <read />
+      <from>6</from>
+      <to>7</to>
+      <read>0</read>
     </transition>
     <transition>
       <from>6</from>
       <to>7</to>
-      <read>[0-9]</read>
+      <read>1</read>
+    </transition>
+    <transition>
+      <from>6</from>
+      <to>7</to>
+      <read>2</read>
+    </transition>
+    <transition>
+      <from>6</from>
+      <to>7</to>
+      <read>3</read>
+    </transition>
+    <transition>
+      <from>6</from>
+      <to>7</to>
+      <read>4</read>
+    </transition>
+    <transition>
+      <from>6</from>
+      <to>7</to>
+      <read>5</read>
+    </transition>
+    <transition>
+      <from>6</from>
+      <to>7</to>
+      <read>6</read>
+    </transition>
+    <transition>
+      <from>6</from>
+      <to>7</to>
+      <read>7</read>
+    </transition>
+    <transition>
+      <from>6</from>
+      <to>7</to>
+      <read>8</read>
+    </transition>
+    <transition>
+      <from>6</from>
+      <to>7</to>
+      <read>9</read>
     </transition>
     <transition>
       <from>7</from>
@@ -96,6 +171,16 @@
     </transition>
     <transition>
       <from>7</from>
+      <to>9</to>
+      <read />
+    </transition>
+    <transition>
+      <from>8</from>
+      <to>6</to>
+      <read />
+    </transition>
+    <transition>
+      <from>8</from>
       <to>9</to>
       <read />
     </transition>
