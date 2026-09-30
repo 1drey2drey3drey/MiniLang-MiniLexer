@@ -1,0 +1,93 @@
+\documentclass[12pt,a4paper,oneside]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{lmodern}
+\usepackage{geometry}
+\geometry{left=3cm,right=2cm,top=3cm,bottom=2.5cm}
+\usepackage{setspace}
+\onehalfspacing
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{float}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{caption}
+\hypersetup{colorlinks=true,linkcolor=black,urlcolor=blue,citecolor=black}
+\lstset{basicstyle=\ttfamily\small,breaklines=true,columns=fullflexible,frame=single,showstringspaces=false}
+
+\newcommand{\NomeProjeto}{MiniLang / MiniLexer}
+\newcommand{\Disciplina}{Linguagens Formais e Autômatos}
+\newcommand{\Professor}{[Preencher nome do professor]}
+\newcommand{\Integrantes}{Andrey Lourival Andrade Garcia; Igor Cecim Vilhena}
+\newcommand{\DataEntrega}{30 de setembro de 2026}
+\newcommand{\DQ}{\ensuremath{\mathtt{\char34}}}
+
+\begin{document}
+\begin{titlepage}
+\centering
+\vspace*{1.5cm}
+{\Large \textbf{\Disciplina}\par}
+\vspace{2cm}
+{\Huge \textbf{\NomeProjeto}\par}
+\vspace{0.6cm}
+{\Large Relatório Técnico\par}
+\vspace{1.5cm}
+{\large Analisador léxico com Expressões Regulares e AFN$\varepsilon$\par}
+\vfill
+\begin{flushleft}
+\textbf{Professor:} \Professor
+\par\medskip
+\textbf{Integrantes:}
+\begin{itemize}[leftmargin=1.2cm]
+\item Andrey Lourival Andrade Garcia
+\item Igor Cecim Vilhena
+\end{itemize}
+\end{flushleft}
+\vfill
+{\large [Cidade -- UF]\\\DataEntrega\par}
+\end{titlepage}
+
+\pagenumbering{roman}
+\chapter*{Resumo}
+O presente relatório descreve o desenvolvimento do \textbf{MiniLang / MiniLexer}, uma aplicação de análise léxica construída para relacionar Expressões Regulares, autômatos finitos não determinísticos com transições vazias (AFN$\varepsilon$) e uma implementação computacional funcional. O projeto define seis Expressões Regulares principais para identificadores, inteiros, decimais, notação científica, strings e horários. Para cada expressão foram especificados o alfabeto, a linguagem, a forma formal, a sintaxe em Python, o AFN$\varepsilon$ de Thompson e casos de teste. A implementação inclui um simulador genérico de AFN$\varepsilon$ e um lexer com prioridade lexical, maior lexema, tratamento de comentários, palavras reservadas, operadores, delimitadores e erros com linha e coluna. Na execução final, a suíte automatizada apresentou 122 testes aprovados. As validações cruzadas AFN$\varepsilon$ $\times$ regex não apresentaram divergências nos espaços de busca reduzidos definidos para as seis ERs, e a validação estrutural confirmou 6/6 AFN$\varepsilon$ em Python e 6/6 arquivos JFLAP contra as tabelas canônicas.
+
+\textbf{Palavras-chave:} Expressões Regulares; AFN$\varepsilon$; Thompson; análise léxica; MiniLang; MiniLexer.
+
+\tableofcontents
+\clearpage
+\pagenumbering{arabic}
+
+\input{secoes/01_introducao}
+\input{secoes/02_fundamentacao}
+\input{secoes/03_especificacao}
+\input{secoes/04_expresssoes_regulares}
+\input{secoes/05_implementacao}
+\input{secoes/06_testes}
+\input{secoes/07_limitacoes}
+\input{secoes/08_documentacao}
+\input{secoes/09_conclusao}
+\input{secoes/10_artefatos}
+\input{secoes/apendice_afne}
+
+\chapter*{Referências}
+\addcontentsline{toc}{chapter}{Referências}
+\begin{thebibliography}{9}
+\bibitem{atividade}
+SOUZA, Daniel Leal. \textit{Atividade Prática AV1: Implementação de Expressões Regulares e AFN$\varepsilon$}. Material da disciplina de Linguagens Formais e Autômatos, 2026.
+
+\bibitem{guia}
+\textit{Guia de Sintaxe para Apresentação das Expressões Regulares}. Material de apoio da disciplina de Linguagens Formais e Autômatos, 2026.
+
+\bibitem{spec}
+\textit{MiniLang --- Guia Base e Especificação do Projeto}. Versão vigente do projeto, 2026.
+
+\bibitem{pythonre}
+PYTHON SOFTWARE FOUNDATION. \textit{Regular expression operations}. Documentação do módulo \texttt{re}. Disponível em: \url{https://docs.python.org/3/library/re.html}. Acesso em: 30 set. 2026.
+\end{thebibliography}
+
+\end{document}

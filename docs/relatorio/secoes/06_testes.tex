@@ -1,0 +1,56 @@
+\chapter{Testes e validação}
+
+\section{Suíte de testes}
+
+A suíte atual possui \textbf{122 testes coletados}, todos aprovados na execução final com \texttt{pytest -q}.
+
+Os testes cobrem palavras reservadas, identificadores, números, horários, strings, comentários, operadores, maior lexema, erros léxicos, linha/coluna, arquivos de exemplo e execução da interface.
+
+\section{\texorpdfstring{Validação cruzada AFN$\varepsilon$ $\times$ regex}{Validação cruzada AFN epsilon x regex}}
+
+Além da suíte de integração, cada uma das seis ERs possui um validator individual e um validator geral. A validação compara a aceitação do AFN$\varepsilon$ com a aplicação de \texttt{re.fullmatch()} sobre alfabetos reduzidos.
+
+\begin{center}
+\small
+\begin{tabular}{|c|r|r|}
+\toprule
+ER & Cadeias comparadas & Divergências \\
+\midrule
+ER-01 & 3.906 & 0 \\
+ER-02 & 111.111 & 0 \\
+ER-03 & 364 & 0 \\
+ER-04 & 19.608 & 0 \\
+ER-05 & 19.531 & 0 \\
+ER-06 & 177.156 & 0 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{\texorpdfstring{Validação estrutural dos AFN$\varepsilon$}{Validação estrutural dos AFN epsilon}}
+
+A validação estrutural compara a especificação canônica com a implementação Python e com os seis arquivos JFLAP. São verificadas: conjunto de estados, estado inicial, estados finais, alfabeto, todas as transições e contagens de Thompson. Para JFLAP, também são verificados os rótulos explícitos das classes agrupadas.
+
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+ER & Python & JFLAP \\
+\midrule
+ER-01 & OK & OK \\
+ER-02 & OK & OK \\
+ER-03 & OK & OK \\
+ER-04 & OK & OK \\
+ER-05 & OK & OK \\
+ER-06 & OK & OK \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Resultado consolidado: \textbf{6/6 AFN$\varepsilon$ Python + 6/6 JFLAP}, com coincidência exata das tabelas, estados, finais e transições.
+
+\section{Interpretação dos resultados}
+
+Os testes não constituem uma prova abstrata de equivalência para todos os alfabetos possíveis. Eles demonstram ausência de divergência no conjunto de casos dirigidos e nas buscas exaustivas sobre os alfabetos reduzidos definidos para cada ER. A validação estrutural complementa essa evidência ao verificar que a implementação e os arquivos JFLAP preservam a construção documentada.
+
+\section{Pontos de competição no lexer}
+
+Os testes de integração verificam explicitamente situações em que duas regras poderiam competir. Entre elas: comentário versus divisão, operadores compostos versus simples, científico versus decimal, decimal versus inteiro, palavras reservadas versus identificadores e candidatos numéricos potencialmente inválidos. Também são verificados strings contendo símbolos que, fora das aspas, teriam outro significado léxico.

@@ -1,0 +1,19 @@
+\chapter{Limitações e discussão}
+
+\section{Limitações da linguagem}
+
+A MiniLang continua restrita ao nível lexical. O reconhecimento de um identificador não determina se ele foi declarado ou qual seu papel semântico. O reconhecimento de um número verifica somente seu formato textual. Horários são validados segundo as faixas 00--23 e 00--59, mas não possuem interpretação contextual.
+
+Strings não possuem escapes na primeira versão. Isso simplifica a construção do AFN$\varepsilon$, mas limita a representação de conteúdos que exijam aspas ou barra invertida internas.
+
+\section{Limitações do lexer}
+
+O MiniLexer não constrói árvore sintática nem interpreta a estrutura do programa. O arquivo pode ser lexicalmente válido sem ser um programa sintaticamente válido em uma linguagem de programação completa.
+
+\section{Melhorias futuras}
+
+Como evolução do projeto, podem ser considerados: introdução de escapes em strings com uma nova ER e correspondente AFN$\varepsilon$; expansão controlada do vocabulário da MiniLang; criação de uma camada de análise sintática; e ampliação das baterias de testes para alfabetos maiores. Essas extensões não fazem parte da versão entregue e, portanto, não foram utilizadas para produzir os resultados atuais.
+
+\section{Decisões de escopo}
+
+Optou-se por não acrescentar funcionalidades apenas para tornar as ERs artificialmente mais complexas. As seis ERs existentes já superam o mínimo exigido e são diretamente justificadas pelo vocabulário lexical da aplicação.

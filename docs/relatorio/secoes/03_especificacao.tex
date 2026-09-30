@@ -1,0 +1,66 @@
+\chapter{Especificação da MiniLang}
+
+\section{Vocabulário geral}
+
+O alfabeto geral da MiniLang utiliza letras ASCII, dígitos, sublinhado, operadores, delimitadores, ponto decimal, aspas e espaços de acordo com o papel de cada categoria lexical. Palavras reservadas são reconhecidas por uma tabela auxiliar e não constituem uma das seis ERs principais.
+
+\section{Palavras reservadas}
+
+A tabela de palavras reservadas contém:
+
+\begin{center}
+\texttt{program}, \texttt{int}, \texttt{float}, \texttt{string}, \texttt{bool}, \texttt{time},
+
+\texttt{if}, \texttt{else}, \texttt{while}, \texttt{print}, \texttt{true}, \texttt{false}.
+\end{center}
+
+\section{Tokens principais}
+
+Os tokens definidos pelo projeto incluem \texttt{PROGRAM}, tipos, estruturas de controle, \texttt{BOOLEAN}, identificadores, inteiros, decimais, notação científica, strings, horários, operadores e delimitadores. \texttt{WHITESPACE} e \texttt{COMMENT} são classes internas e são descartadas da saída final.
+
+\section{Seis Expressões Regulares principais}
+
+As seis ERs principais são:
+
+\begin{center}
+\small
+\begin{tabular}{|c|r|r|r|r|}
+\toprule
+ER & Estados & Transições & $\varepsilon$ & Rotuladas \\
+\midrule
+ER-01 & 28 & 35 & 27 & 8 \\
+ER-02 & 10 & 12 & 9 & 3 \\
+ER-03 & 18 & 22 & 16 & 6 \\
+ER-04 & 42 & 52 & 40 & 12 \\
+ER-05 & 8 & 9 & 6 & 3 \\
+ER-06 & 16 & 16 & 9 & 7 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+As contagens acima são as contagens definitivas congeladas no projeto.
+
+\section{Ordem de tokenização}
+
+A ordem oficial é:
+
+\begin{enumerate}
+    \item whitespace;
+    \item comentário;
+    \item string;
+    \item operador composto;
+    \item número científico;
+    \item número decimal;
+    \item horário;
+    \item número inteiro;
+    \item identificador ou palavra reservada;
+    \item operador simples;
+    \item delimitador;
+    \item erro léxico.
+\end{enumerate}
+
+A prioridade é combinada com o princípio de maior lexema. Em especial, o lexer não deve transformar um candidato numérico inválido em vários tokens menores.
+
+\section{Regras auxiliares importantes}
+
+Comentários iniciados por \texttt{//} são ignorados antes que \texttt{/} seja tratado como divisão. Operadores compostos \texttt{==}, \texttt{!=}, \texttt{<=} e \texttt{>=} têm prioridade sobre operadores simples. A string é analisada antes das regras internas que poderiam interpretar seus símbolos como operadores. O ponto isolado não é um token válido.

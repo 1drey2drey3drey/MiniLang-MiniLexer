@@ -1,0 +1,20 @@
+program cadastro {
+    int idade = 20;
+    float nota = 9.5;
+    float fator = 1.5e3;
+    string nome = "Andrey";
+    bool aprovado = true;
+    time entrada = 14:30;
+
+    if (nota >= 7.0) {
+        print(nome);
+    } else {
+        print("Reprovado");
+    }
+
+    while (idade < 25) {
+        idade = idade + 1;
+    }
+
+    // comentário ignorado pelo lexer
+}

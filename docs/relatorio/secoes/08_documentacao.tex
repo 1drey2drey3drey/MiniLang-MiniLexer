@@ -1,0 +1,26 @@
+\chapter{Documentação, reprodutibilidade e uso de IA}
+
+\section{Organização do projeto}
+
+A versão atual do repositório contém código-fonte, testes, exemplos, documentação, declaração de IA, registro de contribuições e diagramas. Cada ER possui um arquivo \texttt{.jff} para JFLAP e um arquivo \texttt{.txt} com Mermaid.
+
+\section{Reprodutibilidade}
+
+A execução dos testes é realizada com:
+
+\begin{lstlisting}[language=bash]
+pip install -r requirements.txt
+pytest -q
+python tests/validate_all.py
+python tests/validate_afne_structure.py
+\end{lstlisting}
+
+As classes utilizadas nos diagramas JFLAP são explicitadas, por exemplo, como \texttt{[A-Za-z]}, \texttt{[0-9]}, \texttt{[1-9]}, \texttt{[0-5]} e \texttt{[0-3]}, enquanto o simulador Python expande os conjuntos para seus símbolos constituintes.
+
+\section{Uso de Inteligência Artificial}
+
+Ferramentas de IA foram utilizadas como apoio na organização e revisão da especificação, análise das ERs e AFN$\varepsilon$, implementação e revisão do simulador e do lexer, criação dos testes, conferência dos diagramas e revisão documental. O projeto mantém uma declaração explícita em \texttt{docs/DECLARACAO\_IA.md}. A responsabilidade pela compreensão, revisão e alteração do material permanece com a equipe.
+
+\section{Registro de contribuições}
+
+O arquivo \texttt{CONTRIBUICOES.md} registra as frentes de trabalho e deve ser preenchido com os nomes reais e as atividades efetivamente realizadas por cada integrante. O registro deve refletir as atividades efetivamente realizadas por Andrey Lourival Andrade Garcia e Igor Cecim Vilhena, sem atribuições inventadas.

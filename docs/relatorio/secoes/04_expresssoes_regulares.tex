@@ -1,0 +1,362 @@
+\section{ER-01 --- Identificador estruturado}
+\subsection{Finalidade}
+Reconhecer identificadores válidos da MiniLang.
+\subsection{Alfabeto}
+$\Sigma_{ID}=L\cup D\cup\{\_\}$, com $L$ para letras e $D$ para dígitos.
+\subsection{Linguagem reconhecida}
+A cadeia começa obrigatoriamente com uma letra; depois disso podem ocorrer caracteres alfanuméricos ou blocos iniciados por sublinhado, sendo que cada sublinhado deve ser seguido por pelo menos um caractere alfanumérico.
+\subsection{ER formal}
+$L(A\mid\_AA^*)^*$, com $A=L\cup D$.
+\subsection{Sintaxe implementada em Python}
+\begin{lstlisting}[language=Python]
+r"[A-Za-z]([A-Za-z0-9]|_[A-Za-z0-9]+)*"
+\end{lstlisting}
+\subsection{Operadores utilizados}
+A união $\mid$ permite escolher entre alternativas; a concatenação liga blocos em sequência; o fecho de Kleene $*$ permite zero ou mais repetições; e o fecho positivo $+$ indica uma ou mais ocorrências no ramo \texttt{\_[A-Za-z0-9]+}. Os parênteses agrupam subexpressões e as classes \texttt{[A-Za-z]} e \texttt{[A-Za-z0-9]} representam conjuntos finitos de símbolos.
+\subsection{Equivalência formal e computacional}
+\begin{center}
+\small
+\begin{tabular}{|p{0.43\textwidth}|p{0.43\textwidth}|}
+\toprule
+Formal & Python \\
+\midrule
+$L$ & \texttt{[A-Za-z]} \\
+$A=L\cup D$ & \texttt{[A-Za-z0-9]} \\
+$\_AA^*$ & \texttt{\_[A-Za-z0-9]+} \\
+$+$ como $AA^*$ & \texttt{+} \\
+\bottomrule
+\end{tabular}
+\end{center}
+\subsection{AFN-epsilon}
+Estado inicial: \texttt{q0}. Estado final: \texttt{q27}. A construção possui 28 estados, 35 transições, 27 transições $\varepsilon$ e 8 transições rotuladas.
+Os diagramas JFLAP e Mermaid correspondentes estão em \texttt{docs/diagramas/}ER-01/. Ambos são derivados da mesma tabela canônica.
+\subsection{Testes dirigidos}
+\begin{center}
+\small
+\begin{tabular}{|p{0.34\textwidth}|c|p{0.43\textwidth}|}
+\toprule
+Cadeia & Esperado & Interpretação \\
+\midrule
+\texttt{a} & Aceita & Pertence à linguagem definida. \\
+\texttt{nome} & Aceita & Pertence à linguagem definida. \\
+\texttt{aluno1} & Aceita & Pertence à linguagem definida. \\
+\texttt{valor\_total} & Aceita & Pertence à linguagem definida. \\
+\texttt{mediaFinal2} & Aceita & Pertence à linguagem definida. \\
+\texttt{a1\_b2} & Aceita & Pertence à linguagem definida. \\
+$\varepsilon$ & Rejeita & Não pertence à linguagem definida. \\
+\texttt{1aluno} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{\_nome} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{nome\_} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{nome\_\_aluno} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{nome-aluno} & Rejeita & Não pertence à linguagem definida. \\
+\bottomrule
+\end{tabular}
+\end{center}
+\subsection{Casos-limite}
+Os casos de fronteira selecionados são: \texttt{a}, $\varepsilon$, \texttt{a\_}, \texttt{a\_\_b}.
+\medskip
+O propósito desses casos é explorar as menores cadeias válidas, limites superiores/inferiores e formas quase válidas que poderiam ser aceitas por uma regra permissiva demais.
+\subsection{Observação sobre palavras reservadas}
+Palavras como \texttt{int} e \texttt{float} possuem formato compatível com a ER de identificadores. A distinção final ocorre pela tabela de palavras reservadas do lexer, após o reconhecimento do lexema.
+
+\section{ER-02 --- Inteiro sem zero à esquerda}
+\subsection{Finalidade}
+Reconhecer inteiros sem zero à esquerda, permitindo somente o literal `0` como zero isolado.
+\subsection{Alfabeto}
+$\Sigma_{INT}=D$, com $D=\{0,1,\ldots,9\}$.
+\subsection{Linguagem reconhecida}
+$L_{INT}=\{0\}\cup ND^*$, onde $N=\{1,\ldots,9\}$.
+\subsection{ER formal}
+$0\mid ND^*$.
+\subsection{Sintaxe implementada em Python}
+\begin{lstlisting}[language=Python]
+r"(0|[1-9][0-9]*)"
+\end{lstlisting}
+\subsection{Operadores utilizados}
+A união $\mid$ separa o caso do zero do caso iniciado por $N$; a concatenação forma a sequência dos símbolos; o fecho $*$ permite qualquer quantidade de dígitos após o primeiro não nulo; e os parênteses agrupam a alternativa no padrão Python.
+\subsection{Equivalência formal e computacional}
+\begin{center}
+\small
+\begin{tabular}{|p{0.43\textwidth}|p{0.43\textwidth}|}
+\toprule
+Formal & Python \\
+\midrule
+$0$ & \texttt{0} \\
+$N$ & \texttt{[1-9]} \\
+$D$ & \texttt{[0-9]} \\
+$D^*$ & \texttt{[0-9]*} \\
+\bottomrule
+\end{tabular}
+\end{center}
+\subsection{AFN-epsilon}
+Estado inicial: \texttt{q0}. Estado final: \texttt{q1}. A construção possui 10 estados, 12 transições, 9 transições $\varepsilon$ e 3 transições rotuladas.
+Os diagramas JFLAP e Mermaid correspondentes estão em \texttt{docs/diagramas/}ER-02/. Ambos são derivados da mesma tabela canônica.
+\subsection{Testes dirigidos}
+\begin{center}
+\small
+\begin{tabular}{|p{0.34\textwidth}|c|p{0.43\textwidth}|}
+\toprule
+Cadeia & Esperado & Interpretação \\
+\midrule
+\texttt{0} & Aceita & Pertence à linguagem definida. \\
+\texttt{1} & Aceita & Pertence à linguagem definida. \\
+\texttt{7} & Aceita & Pertence à linguagem definida. \\
+\texttt{10} & Aceita & Pertence à linguagem definida. \\
+\texttt{2026} & Aceita & Pertence à linguagem definida. \\
+\texttt{999999} & Aceita & Pertence à linguagem definida. \\
+$\varepsilon$ & Rejeita & Não pertence à linguagem definida. \\
+\texttt{00} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{01} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{007} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{12.5} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{-10} & Rejeita & Não pertence à linguagem definida. \\
+\bottomrule
+\end{tabular}
+\end{center}
+\subsection{Casos-limite}
+Os casos de fronteira selecionados são: \texttt{0}, \texttt{1}, \texttt{00}, \texttt{01}, $\varepsilon$.
+\medskip
+O propósito desses casos é explorar as menores cadeias válidas, limites superiores/inferiores e formas quase válidas que poderiam ser aceitas por uma regra permissiva demais.
+
+\section{ER-03 --- Decimal}
+\subsection{Finalidade}
+Reconhecer números decimais cuja parte inteira segue a regra de inteiro e cuja parte fracionária possui ao menos um dígito.
+\subsection{Alfabeto}
+$\Sigma_{DEC}=D\cup\{.\}$.
+\subsection{Linguagem reconhecida}
+A cadeia possui uma parte inteira válida, seguida por ponto e por uma ou mais ocorrências de dígitos.
+\subsection{ER formal}
+$(0\mid ND^*)PDD^*$, com $P=\{.\}$.
+\subsection{Sintaxe implementada em Python}
+\begin{lstlisting}[language=Python]
+r"(0|[1-9][0-9]*)\.[0-9]+"
+\end{lstlisting}
+\subsection{Operadores utilizados}
+A união $\mid$ define as alternativas da parte inteira; a concatenação coloca parte inteira, ponto e parte fracionária em sequência; o ponto é tratado como literal por meio de $P=\{.\}$ e do escape \texttt{\textbackslash.} no código; e o $+$ computacional exige pelo menos um dígito após o ponto.
+\subsection{Equivalência formal e computacional}
+\begin{center}
+\small
+\begin{tabular}{|p{0.43\textwidth}|p{0.43\textwidth}|}
+\toprule
+Formal & Python \\
+\midrule
+$N$ & \texttt{[1-9]} \\
+$D$ & \texttt{[0-9]} \\
+$P$ & \texttt{\textbackslash.} \\
+$DD^*$ & \texttt{[0-9]+} \\
+\bottomrule
+\end{tabular}
+\end{center}
+\subsection{AFN-epsilon}
+Estado inicial: \texttt{q0}. Estado final: \texttt{q17}. A construção possui 18 estados, 22 transições, 16 transições $\varepsilon$ e 6 transições rotuladas.
+Os diagramas JFLAP e Mermaid correspondentes estão em \texttt{docs/diagramas/}ER-03/. Ambos são derivados da mesma tabela canônica.
+\subsection{Testes dirigidos}
+\begin{center}
+\small
+\begin{tabular}{|p{0.34\textwidth}|c|p{0.43\textwidth}|}
+\toprule
+Cadeia & Esperado & Interpretação \\
+\midrule
+\texttt{0.5} & Aceita & Pertence à linguagem definida. \\
+\texttt{0.50} & Aceita & Pertence à linguagem definida. \\
+\texttt{1.5} & Aceita & Pertence à linguagem definida. \\
+\texttt{9.5} & Aceita & Pertence à linguagem definida. \\
+\texttt{10.25} & Aceita & Pertence à linguagem definida. \\
+\texttt{2026.75} & Aceita & Pertence à linguagem definida. \\
+\texttt{00.5} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{09.5} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{.5} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{1.} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{1.5.2} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{-10.5} & Rejeita & Não pertence à linguagem definida. \\
+\bottomrule
+\end{tabular}
+\end{center}
+\subsection{Casos-limite}
+Os casos de fronteira selecionados são: \texttt{0.0}, \texttt{1.0}, \texttt{00.5}, \texttt{.5}, \texttt{1.}.
+\medskip
+O propósito desses casos é explorar as menores cadeias válidas, limites superiores/inferiores e formas quase válidas que poderiam ser aceitas por uma regra permissiva demais.
+
+\section{ER-04 --- Número científico}
+\subsection{Finalidade}
+Reconhecer números em notação científica com parte inteira válida, parte decimal opcional, expoente iniciado por `e` ou `E`, sinal opcional e expoente numérico obrigatório.
+\subsection{Alfabeto}
+$\Sigma_{SCI}=D\cup\{.,e,E,+,-\}$.
+\subsection{Linguagem reconhecida}
+A base é $0$ ou $ND^*$; a parte decimal é opcional; a letra $e$ ou $E$ é obrigatória; o sinal do expoente é opcional; o expoente possui um ou mais dígitos.
+\subsection{ER formal}
+$(0\mid ND^*)(PDD^*\mid\varepsilon)(e\mid E)(+\mid-\mid\varepsilon)DD^*$.
+\subsection{Sintaxe implementada em Python}
+\begin{lstlisting}[language=Python]
+r"(0|[1-9][0-9]*)(\.[0-9]+)?[eE][+-]?[0-9]+"
+\end{lstlisting}
+\subsection{Operadores utilizados}
+A união $\mid$ representa alternativas; a concatenação encadeia a mantissa, o expoente e seus componentes; a opcionalidade $?$ corresponde a $r\mid\varepsilon$ para a parte decimal; as classes \texttt{[eE]} e \texttt{[+-]} representam escolhas finitas; e \texttt{[0-9]+} exige um ou mais dígitos no expoente.
+\subsection{Equivalência formal e computacional}
+\begin{center}
+\small
+\begin{tabular}{|p{0.43\textwidth}|p{0.43\textwidth}|}
+\toprule
+Formal & Python \\
+\midrule
+$PDD^*\mid\varepsilon$ & \texttt{(\textbackslash.[0-9]+)?} \\
+$e\mid E$ & \texttt{[eE]} \\
+$+\mid-\mid\varepsilon$ & \texttt{[+-]?} \\
+$DD^*$ & \texttt{[0-9]+} \\
+\bottomrule
+\end{tabular}
+\end{center}
+\subsection{AFN-epsilon}
+Estado inicial: \texttt{q0}. Estado final: \texttt{q39}. A construção possui 42 estados, 52 transições, 40 transições $\varepsilon$ e 12 transições rotuladas.
+Os diagramas JFLAP e Mermaid correspondentes estão em \texttt{docs/diagramas/}ER-04/. Ambos são derivados da mesma tabela canônica.
+\subsection{Testes dirigidos}
+\begin{center}
+\small
+\begin{tabular}{|p{0.34\textwidth}|c|p{0.43\textwidth}|}
+\toprule
+Cadeia & Esperado & Interpretação \\
+\midrule
+\texttt{1e3} & Aceita & Pertence à linguagem definida. \\
+\texttt{10e2} & Aceita & Pertence à linguagem definida. \\
+\texttt{0e5} & Aceita & Pertence à linguagem definida. \\
+\texttt{1.5e3} & Aceita & Pertence à linguagem definida. \\
+\texttt{9.5E-2} & Aceita & Pertence à linguagem definida. \\
+\texttt{10.25e+4} & Aceita & Pertence à linguagem definida. \\
+$\varepsilon$ & Rejeita & Não pertence à linguagem definida. \\
+\texttt{1e} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{1e+} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{.5e2} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{01e3} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{1.5.2e3} & Rejeita & Não pertence à linguagem definida. \\
+\bottomrule
+\end{tabular}
+\end{center}
+\subsection{Casos-limite}
+Os casos de fronteira selecionados são: \texttt{1e0}, \texttt{0e1}, \texttt{1e}, \texttt{1e+}, \texttt{01e3}.
+\medskip
+O propósito desses casos é explorar as menores cadeias válidas, limites superiores/inferiores e formas quase válidas que poderiam ser aceitas por uma regra permissiva demais.
+
+\section{ER-05 --- Literal de string}
+\subsection{Finalidade}
+Reconhecer literais de string delimitados por aspas duplas, com conteúdo em um conjunto ASCII restrito.
+\subsection{Alfabeto}
+$C=L\cup D\cup\{\text{espaço},\texttt{\_},\texttt{.},\texttt{,},\texttt{!},\texttt{?},\texttt{:},\texttt{;},\texttt{+},\texttt{-},\texttt{*},\texttt{/},\texttt{=},\texttt{<},\texttt{>}\}$ e $\Sigma_{STR}=C\cup\{\text{aspas duplas}\}$.
+\subsection{Linguagem reconhecida}
+$L_{STR}=\{\text{aspas duplas }x\text{ aspas duplas}\mid x\in C^*\}$. A string vazia é válida.
+\subsection{ER formal}
+$\text{aspas duplas }C^*\text{ aspas duplas}$.
+\subsection{Sintaxe implementada em Python}
+\begin{lstlisting}[language=Python]
+r'"[A-Za-z0-9 _.,!?;:+*/=<>-]*"'
+\end{lstlisting}
+\subsection{Operadores utilizados}
+A classe finita do conteúdo representa os símbolos permitidos; o fecho de Kleene $*$ permite zero ou mais caracteres dentro das aspas; e as aspas duplas são delimitadores literais da cadeia. Não há mecanismo de escape nesta versão.
+\subsection{Equivalência formal e computacional}
+\begin{center}
+\small
+\begin{tabular}{|p{0.43\textwidth}|p{0.43\textwidth}|}
+\toprule
+Formal & Python \\
+\midrule
+$C^*$ & \texttt{[A-Za-z0-9 \_.,!?;:+*/=<>-]*} \\
+aspas & \texttt{"..."} \\
+$*$ permite $\varepsilon$ & \texttt{*} \\
+\bottomrule
+\end{tabular}
+\end{center}
+\subsection{AFN-epsilon}
+Estado inicial: \texttt{q0}. Estado final: \texttt{q7}. A construção possui 8 estados, 9 transições, 6 transições $\varepsilon$ e 3 transições rotuladas.
+Os diagramas JFLAP e Mermaid correspondentes estão em \texttt{docs/diagramas/}ER-05/. Ambos são derivados da mesma tabela canônica.
+\subsection{Testes dirigidos}
+\begin{center}
+\small
+\begin{tabular}{|p{0.34\textwidth}|c|p{0.43\textwidth}|}
+\toprule
+Cadeia & Esperado & Interpretação \\
+\midrule
+\texttt{""} & Aceita & Pertence à linguagem definida. \\
+\texttt{"Andrey"} & Aceita & Pertence à linguagem definida. \\
+\texttt{"abc 123"} & Aceita & Pertence à linguagem definida. \\
+\texttt{"a\_b.c"} & Aceita & Pertence à linguagem definida. \\
+\texttt{"hello!"} & Aceita & Pertence à linguagem definida. \\
+\texttt{"12:30"} & Aceita & Pertence à linguagem definida. \\
+$\varepsilon$ & Rejeita & Não pertence à linguagem definida. \\
+\texttt{"abc} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{abc"} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{"a"b"} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{"a\textbackslash\{\}b"} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{"linha
+} & Rejeita & Não pertence à linguagem definida. \\
+\bottomrule
+\end{tabular}
+\end{center}
+\subsection{Casos-limite}
+Os casos de fronteira selecionados são: \texttt{""}, \texttt{"a"}, \texttt{"abc}, \texttt{"a\textbackslash\{\}b"}.
+\medskip
+O propósito desses casos é explorar as menores cadeias válidas, limites superiores/inferiores e formas quase válidas que poderiam ser aceitas por uma regra permissiva demais.
+\subsection{Limitação específica}
+A primeira versão da MiniLang não possui mecanismo de escape. Aspas, barra invertida, tabulação e quebra de linha não pertencem ao conjunto de conteúdo \(C\).
+
+\section{ER-06 --- Literal de horário}
+\subsection{Finalidade}
+Reconhecer literais de horário no formato HH:MM, com horas entre 00 e 23 e minutos entre 00 e 59.
+\subsection{Alfabeto}
+$\Sigma_{TIME}=D\cup\{:\}$.
+\subsection{Linguagem reconhecida}
+A hora pertence a 00--19 ou 20--23; os minutos pertencem a 00--59.
+\subsection{ER formal}
+$((0\mid1)D\mid2(0\mid1\mid2\mid3))Q(0\mid1\mid2\mid3\mid4\mid5)D$, com $Q=\{:\}$.
+\subsection{Sintaxe implementada em Python}
+\begin{lstlisting}[language=Python]
+r"([01][0-9]|2[0-3]):[0-5][0-9]"
+\end{lstlisting}
+\subsection{Operadores utilizados}
+A união $\mid$ define as alternativas para as horas e minutos; a concatenação organiza os dígitos e o separador; as classes \texttt{[01]}, \texttt{[0-3]} e \texttt{[0-5]} representam os conjuntos finitos correspondentes.
+\subsection{Equivalência formal e computacional}
+\begin{center}
+\small
+\begin{tabular}{|p{0.43\textwidth}|p{0.43\textwidth}|}
+\toprule
+Formal & Python \\
+\midrule
+$(0\mid1)$ & \texttt{[01]} \\
+$D$ & \texttt{[0-9]} \\
+$2(0\mid1\mid2\mid3)$ & \texttt{2[0-3]} \\
+$Q$ & \texttt{:} \\
+$(0\mid1\mid2\mid3\mid4\mid5)$ & \texttt{[0-5]} \\
+\bottomrule
+\end{tabular}
+\end{center}
+\subsection{AFN-epsilon}
+Estado inicial: \texttt{q0}. Estado final: \texttt{q15}. A construção possui 16 estados, 16 transições, 9 transições $\varepsilon$ e 7 transições rotuladas.
+Os diagramas JFLAP e Mermaid correspondentes estão em \texttt{docs/diagramas/}ER-06/. Ambos são derivados da mesma tabela canônica.
+\subsection{Testes dirigidos}
+\begin{center}
+\small
+\begin{tabular}{|p{0.34\textwidth}|c|p{0.43\textwidth}|}
+\toprule
+Cadeia & Esperado & Interpretação \\
+\midrule
+\texttt{00:00} & Aceita & Pertence à linguagem definida. \\
+\texttt{09:05} & Aceita & Pertence à linguagem definida. \\
+\texttt{12:30} & Aceita & Pertence à linguagem definida. \\
+\texttt{14:59} & Aceita & Pertence à linguagem definida. \\
+\texttt{23:00} & Aceita & Pertence à linguagem definida. \\
+\texttt{23:59} & Aceita & Pertence à linguagem definida. \\
+$\varepsilon$ & Rejeita & Não pertence à linguagem definida. \\
+\texttt{24:00} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{12:60} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{2:30} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{14:5} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{99:99} & Rejeita & Não pertence à linguagem definida. \\
+\bottomrule
+\end{tabular}
+\end{center}
+\subsection{Casos-limite}
+Os casos de fronteira selecionados são: \texttt{00:00}, \texttt{23:59}, \texttt{24:00}, \texttt{12:60}.
+\medskip
+O propósito desses casos é explorar as menores cadeias válidas, limites superiores/inferiores e formas quase válidas que poderiam ser aceitas por uma regra permissiva demais.
+\subsection{Observação de correção}
+Na faixa de horas 20--23, o segundo dígito pertence ao conjunto \(\{0,1,2,3\}\).
+
+Nos arquivos JFLAP e Mermaid, essa transição aparece como \texttt{[0-3]}. 

@@ -1,0 +1,8 @@
+program erro {
+    int codigo = 007;
+    float nota = 09.5;
+    float fator = 1.5e;
+    time entrada = 25:90;
+    string nome = "Andrey;
+    int valor = 20 @ 5;
+}

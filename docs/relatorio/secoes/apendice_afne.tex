@@ -1,0 +1,226 @@
+\appendix
+\chapter{Tabelas completas dos AFN-epsilon}
+\section{ER-01 --- Identificador estruturado}
+\small
+\begin{longtable}{|r|c|c|c|}
+\toprule
+No. & Origem & Símbolo & Destino \\
+\midrule
+\endfirsthead
+\toprule
+No. & Origem & Símbolo & Destino \\
+\midrule
+\endhead
+1 & \texttt{q0} & \texttt{[A-Za-z]} & \texttt{q1} \\
+2 & \texttt{q1} & $\varepsilon$ & \texttt{q26} \\
+3 & \texttt{q6} & $\varepsilon$ & \texttt{q2} \\
+4 & \texttt{q6} & $\varepsilon$ & \texttt{q4} \\
+5 & \texttt{q2} & \texttt{[A-Za-z]} & \texttt{q3} \\
+6 & \texttt{q3} & $\varepsilon$ & \texttt{q7} \\
+7 & \texttt{q4} & \texttt{[0-9]} & \texttt{q5} \\
+8 & \texttt{q5} & $\varepsilon$ & \texttt{q7} \\
+9 & \texttt{q8} & \texttt{\_} & \texttt{q9} \\
+10 & \texttt{q9} & $\varepsilon$ & \texttt{q14} \\
+11 & \texttt{q14} & $\varepsilon$ & \texttt{q10} \\
+12 & \texttt{q14} & $\varepsilon$ & \texttt{q12} \\
+13 & \texttt{q10} & \texttt{[A-Za-z]} & \texttt{q11} \\
+14 & \texttt{q11} & $\varepsilon$ & \texttt{q15} \\
+15 & \texttt{q12} & \texttt{[0-9]} & \texttt{q13} \\
+16 & \texttt{q13} & $\varepsilon$ & \texttt{q15} \\
+17 & \texttt{q15} & $\varepsilon$ & \texttt{q16} \\
+18 & \texttt{q16} & $\varepsilon$ & \texttt{q18} \\
+19 & \texttt{q16} & $\varepsilon$ & \texttt{q17} \\
+20 & \texttt{q18} & $\varepsilon$ & \texttt{q20} \\
+21 & \texttt{q18} & $\varepsilon$ & \texttt{q22} \\
+22 & \texttt{q20} & \texttt{[A-Za-z]} & \texttt{q21} \\
+23 & \texttt{q22} & \texttt{[0-9]} & \texttt{q23} \\
+24 & \texttt{q21} & $\varepsilon$ & \texttt{q19} \\
+25 & \texttt{q23} & $\varepsilon$ & \texttt{q19} \\
+26 & \texttt{q19} & $\varepsilon$ & \texttt{q18} \\
+27 & \texttt{q19} & $\varepsilon$ & \texttt{q17} \\
+28 & \texttt{q24} & $\varepsilon$ & \texttt{q6} \\
+29 & \texttt{q24} & $\varepsilon$ & \texttt{q8} \\
+30 & \texttt{q7} & $\varepsilon$ & \texttt{q25} \\
+31 & \texttt{q17} & $\varepsilon$ & \texttt{q25} \\
+32 & \texttt{q26} & $\varepsilon$ & \texttt{q24} \\
+33 & \texttt{q26} & $\varepsilon$ & \texttt{q27} \\
+34 & \texttt{q25} & $\varepsilon$ & \texttt{q24} \\
+35 & \texttt{q25} & $\varepsilon$ & \texttt{q27} \\
+\bottomrule
+\end{longtable}
+\section{ER-02 --- Inteiro sem zero à esquerda}
+\small
+\begin{longtable}{|r|c|c|c|}
+\toprule
+No. & Origem & Símbolo & Destino \\
+\midrule
+\endfirsthead
+\toprule
+No. & Origem & Símbolo & Destino \\
+\midrule
+\endhead
+1 & \texttt{q0} & $\varepsilon$ & \texttt{q2} \\
+2 & \texttt{q0} & $\varepsilon$ & \texttt{q4} \\
+3 & \texttt{q2} & \texttt{0} & \texttt{q3} \\
+4 & \texttt{q3} & $\varepsilon$ & \texttt{q1} \\
+5 & \texttt{q4} & \texttt{[1-9]} & \texttt{q5} \\
+6 & \texttt{q5} & $\varepsilon$ & \texttt{q8} \\
+7 & \texttt{q8} & $\varepsilon$ & \texttt{q6} \\
+8 & \texttt{q8} & $\varepsilon$ & \texttt{q9} \\
+9 & \texttt{q6} & \texttt{[0-9]} & \texttt{q7} \\
+10 & \texttt{q7} & $\varepsilon$ & \texttt{q6} \\
+11 & \texttt{q7} & $\varepsilon$ & \texttt{q9} \\
+12 & \texttt{q9} & $\varepsilon$ & \texttt{q1} \\
+\bottomrule
+\end{longtable}
+\section{ER-03 --- Decimal}
+\small
+\begin{longtable}{|r|c|c|c|}
+\toprule
+No. & Origem & Símbolo & Destino \\
+\midrule
+\endfirsthead
+\toprule
+No. & Origem & Símbolo & Destino \\
+\midrule
+\endhead
+1 & \texttt{q2} & \texttt{0} & \texttt{q3} \\
+2 & \texttt{q0} & $\varepsilon$ & \texttt{q2} \\
+3 & \texttt{q3} & $\varepsilon$ & \texttt{q1} \\
+4 & \texttt{q4} & \texttt{[1-9]} & \texttt{q5} \\
+5 & \texttt{q8} & \texttt{[0-9]} & \texttt{q9} \\
+6 & \texttt{q6} & $\varepsilon$ & \texttt{q8} \\
+7 & \texttt{q6} & $\varepsilon$ & \texttt{q7} \\
+8 & \texttt{q9} & $\varepsilon$ & \texttt{q8} \\
+9 & \texttt{q9} & $\varepsilon$ & \texttt{q7} \\
+10 & \texttt{q5} & $\varepsilon$ & \texttt{q6} \\
+11 & \texttt{q0} & $\varepsilon$ & \texttt{q4} \\
+12 & \texttt{q7} & $\varepsilon$ & \texttt{q1} \\
+13 & \texttt{q10} & \texttt{.} & \texttt{q11} \\
+14 & \texttt{q1} & $\varepsilon$ & \texttt{q10} \\
+15 & \texttt{q12} & \texttt{[0-9]} & \texttt{q13} \\
+16 & \texttt{q11} & $\varepsilon$ & \texttt{q12} \\
+17 & \texttt{q16} & \texttt{[0-9]} & \texttt{q17} \\
+18 & \texttt{q14} & $\varepsilon$ & \texttt{q16} \\
+19 & \texttt{q14} & $\varepsilon$ & \texttt{q17} \\
+20 & \texttt{q17} & $\varepsilon$ & \texttt{q16} \\
+21 & \texttt{q17} & $\varepsilon$ & \texttt{q15} \\
+22 & \texttt{q13} & $\varepsilon$ & \texttt{q14} \\
+\bottomrule
+\end{longtable}
+\section{ER-04 --- Número científico}
+\small
+\begin{longtable}{|r|c|c|c|}
+\toprule
+No. & Origem & Símbolo & Destino \\
+\midrule
+\endfirsthead
+\toprule
+No. & Origem & Símbolo & Destino \\
+\midrule
+\endhead
+1 & \texttt{q2} & \texttt{0} & \texttt{q3} \\
+2 & \texttt{q0} & $\varepsilon$ & \texttt{q2} \\
+3 & \texttt{q3} & $\varepsilon$ & \texttt{q1} \\
+4 & \texttt{q4} & \texttt{[1-9]} & \texttt{q5} \\
+5 & \texttt{q8} & \texttt{[0-9]} & \texttt{q9} \\
+6 & \texttt{q6} & $\varepsilon$ & \texttt{q8} \\
+7 & \texttt{q6} & $\varepsilon$ & \texttt{q7} \\
+8 & \texttt{q9} & $\varepsilon$ & \texttt{q8} \\
+9 & \texttt{q9} & $\varepsilon$ & \texttt{q7} \\
+10 & \texttt{q5} & $\varepsilon$ & \texttt{q6} \\
+11 & \texttt{q0} & $\varepsilon$ & \texttt{q4} \\
+12 & \texttt{q7} & $\varepsilon$ & \texttt{q1} \\
+13 & \texttt{q12} & \texttt{.} & \texttt{q13} \\
+14 & \texttt{q14} & \texttt{[0-9]} & \texttt{q15} \\
+15 & \texttt{q13} & $\varepsilon$ & \texttt{q14} \\
+16 & \texttt{q18} & \texttt{[0-9]} & \texttt{q19} \\
+17 & \texttt{q16} & $\varepsilon$ & \texttt{q18} \\
+18 & \texttt{q16} & $\varepsilon$ & \texttt{q17} \\
+19 & \texttt{q19} & $\varepsilon$ & \texttt{q18} \\
+20 & \texttt{q19} & $\varepsilon$ & \texttt{q17} \\
+21 & \texttt{q15} & $\varepsilon$ & \texttt{q16} \\
+22 & \texttt{q10} & $\varepsilon$ & \texttt{q12} \\
+23 & \texttt{q17} & $\varepsilon$ & \texttt{q11} \\
+24 & \texttt{q20} & $\varepsilon$ & \texttt{q21} \\
+25 & \texttt{q10} & $\varepsilon$ & \texttt{q20} \\
+26 & \texttt{q21} & $\varepsilon$ & \texttt{q11} \\
+27 & \texttt{q1} & $\varepsilon$ & \texttt{q10} \\
+28 & \texttt{q24} & \texttt{e} & \texttt{q25} \\
+29 & \texttt{q22} & $\varepsilon$ & \texttt{q24} \\
+30 & \texttt{q25} & $\varepsilon$ & \texttt{q23} \\
+31 & \texttt{q26} & \texttt{E} & \texttt{q27} \\
+32 & \texttt{q22} & $\varepsilon$ & \texttt{q26} \\
+33 & \texttt{q27} & $\varepsilon$ & \texttt{q23} \\
+34 & \texttt{q11} & $\varepsilon$ & \texttt{q22} \\
+35 & \texttt{q30} & \texttt{+} & \texttt{q31} \\
+36 & \texttt{q28} & $\varepsilon$ & \texttt{q30} \\
+37 & \texttt{q31} & $\varepsilon$ & \texttt{q29} \\
+38 & \texttt{q32} & \texttt{-} & \texttt{q33} \\
+39 & \texttt{q28} & $\varepsilon$ & \texttt{q32} \\
+40 & \texttt{q33} & $\varepsilon$ & \texttt{q29} \\
+41 & \texttt{q34} & $\varepsilon$ & \texttt{q35} \\
+42 & \texttt{q28} & $\varepsilon$ & \texttt{q34} \\
+43 & \texttt{q35} & $\varepsilon$ & \texttt{q29} \\
+44 & \texttt{q23} & $\varepsilon$ & \texttt{q28} \\
+45 & \texttt{q36} & \texttt{[0-9]} & \texttt{q37} \\
+46 & \texttt{q29} & $\varepsilon$ & \texttt{q36} \\
+47 & \texttt{q40} & \texttt{[0-9]} & \texttt{q41} \\
+48 & \texttt{q38} & $\varepsilon$ & \texttt{q40} \\
+49 & \texttt{q38} & $\varepsilon$ & \texttt{q39} \\
+50 & \texttt{q41} & $\varepsilon$ & \texttt{q40} \\
+51 & \texttt{q41} & $\varepsilon$ & \texttt{q39} \\
+52 & \texttt{q37} & $\varepsilon$ & \texttt{q38} \\
+\bottomrule
+\end{longtable}
+\section{ER-05 --- Literal de string}
+\small
+\begin{longtable}{|r|c|c|c|}
+\toprule
+No. & Origem & Símbolo & Destino \\
+\midrule
+\endfirsthead
+\toprule
+No. & Origem & Símbolo & Destino \\
+\midrule
+\endhead
+1 & \texttt{q0} & \texttt{"} & \texttt{q1} \\
+2 & \texttt{q4} & \texttt{[A-Za-z0-9 \_.,!?;:+*/=<>-]} & \texttt{q5} \\
+3 & \texttt{q2} & $\varepsilon$ & \texttt{q4} \\
+4 & \texttt{q2} & $\varepsilon$ & \texttt{q3} \\
+5 & \texttt{q5} & $\varepsilon$ & \texttt{q4} \\
+6 & \texttt{q5} & $\varepsilon$ & \texttt{q3} \\
+7 & \texttt{q1} & $\varepsilon$ & \texttt{q2} \\
+8 & \texttt{q6} & \texttt{"} & \texttt{q7} \\
+9 & \texttt{q3} & $\varepsilon$ & \texttt{q6} \\
+\bottomrule
+\end{longtable}
+\section{ER-06 --- Literal de horário}
+\small
+\begin{longtable}{|r|c|c|c|}
+\toprule
+No. & Origem & Símbolo & Destino \\
+\midrule
+\endfirsthead
+\toprule
+No. & Origem & Símbolo & Destino \\
+\midrule
+\endhead
+1 & \texttt{q2} & \texttt{[01]} & \texttt{q3} \\
+2 & \texttt{q4} & \texttt{[0-9]} & \texttt{q5} \\
+3 & \texttt{q3} & $\varepsilon$ & \texttt{q4} \\
+4 & \texttt{q0} & $\varepsilon$ & \texttt{q2} \\
+5 & \texttt{q5} & $\varepsilon$ & \texttt{q1} \\
+6 & \texttt{q6} & \texttt{2} & \texttt{q7} \\
+7 & \texttt{q8} & \texttt{[0-3]} & \texttt{q9} \\
+8 & \texttt{q7} & $\varepsilon$ & \texttt{q8} \\
+9 & \texttt{q0} & $\varepsilon$ & \texttt{q6} \\
+10 & \texttt{q9} & $\varepsilon$ & \texttt{q1} \\
+11 & \texttt{q10} & \texttt{:} & \texttt{q11} \\
+12 & \texttt{q1} & $\varepsilon$ & \texttt{q10} \\
+13 & \texttt{q12} & \texttt{[0-5]} & \texttt{q13} \\
+14 & \texttt{q14} & \texttt{[0-9]} & \texttt{q15} \\
+15 & \texttt{q13} & $\varepsilon$ & \texttt{q14} \\
+16 & \texttt{q11} & $\varepsilon$ & \texttt{q12} \\
+\bottomrule
+\end{longtable}

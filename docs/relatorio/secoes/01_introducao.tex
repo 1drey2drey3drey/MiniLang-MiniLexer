@@ -1,0 +1,32 @@
+\chapter{Introdução e objetivos}
+
+\section{Contexto}
+
+O projeto \textbf{MiniLang / MiniLexer} foi desenvolvido para a disciplina de Linguagens Formais e Autômatos com o objetivo de relacionar os conceitos de Expressões Regulares e autômatos finitos com uma aplicação computacional funcional. A aplicação implementa um analisador léxico de uma linguagem de programação simplificada denominada MiniLang.
+
+O enunciado da atividade exige uma aplicação com entrada, processamento e saída, no mínimo cinco Expressões Regulares relevantes, tratamento de entradas inválidas, código organizado e, para cada expressão, a apresentação do alfabeto, linguagem reconhecida, ER formal, sintaxe implementada, explicação dos operadores, AFN$\varepsilon$ e testes com cadeias aceitas e rejeitadas. Também estabelece que a ER formal, a sintaxe usada no programa, os testes e o AFN$\varepsilon$ devem representar a mesma linguagem.
+
+\section{Objetivo geral}
+
+Construir e validar um analisador léxico da MiniLang, demonstrando uma cadeia completa de consistência:
+
+\begin{center}
+\texttt{especificação $\rightarrow$ ER formal $\rightarrow$ AFN$\varepsilon$ $\rightarrow$ regex Python $\rightarrow$ testes $\rightarrow$ lexer}
+\end{center}
+
+\section{Objetivos específicos}
+
+\begin{itemize}
+    \item definir seis Expressões Regulares próprias e relevantes para a MiniLang;
+    \item construir os AFN$\varepsilon$ correspondentes pela convenção de Thompson adotada no projeto;
+    \item implementar um simulador genérico de AFN$\varepsilon$;
+    \item implementar o MiniLexer com prioridade e maior lexema;
+    \item validar a correspondência entre AFN$\varepsilon$ e regex Python por testes automatizados;
+    \item validar estruturalmente estados, estados finais, alfabetos e transições dos seis AFN$\varepsilon$;
+    \item disponibilizar os diagramas em JFLAP e Mermaid;
+    \item documentar limitações, resultados e possibilidades de evolução.
+\end{itemize}
+
+\section{Escopo}
+
+A MiniLang é tratada exclusivamente no nível léxico. O projeto não implementa parser, análise semântica, compilação, execução, verificação completa de tipos, geração de código ou máquina virtual. Esta delimitação evita que funcionalidades posteriores alterem o foco acadêmico do trabalho.

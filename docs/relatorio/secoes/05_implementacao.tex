@@ -1,0 +1,33 @@
+\chapter{Implementação do MiniLexer}
+
+\section{Arquitetura do código}
+
+A implementação foi organizada em módulos:
+
+\begin{itemize}
+    \item \texttt{src/automata.py}: marcador de $\varepsilon$, classe \texttt{AFNe}, simulador e construções dos seis AFN$\varepsilon$;
+    \item \texttt{src/patterns.py}: regexes de referência, palavras reservadas, operadores, delimitadores e conjuntos auxiliares;
+    \item \texttt{src/tokens.py}: tipos e representação de tokens;
+    \item \texttt{src/lexer.py}: análise léxica, controle de posição, maior lexema e erros;
+    \item \texttt{src/main.py}: interface de linha de comando.
+\end{itemize}
+
+\section{Processamento léxico}
+
+O lexer percorre a entrada da esquerda para a direita. Espaços são descartados; comentários de linha iniciados por \texttt{//} são ignorados; strings são consumidas integralmente entre aspas; operadores compostos são reconhecidos antes dos simples; números são analisados como candidatos que podem ser inteiros, decimais, científicos ou horários; identificadores são reconhecidos e posteriormente classificados como palavras reservadas ou \texttt{IDENTIFIER}.
+
+\section{Proteção contra fragmentação}
+
+Um dos pontos relevantes da implementação é evitar que uma entrada inválida seja silenciosamente dividida em tokens menores. Exemplos como \texttt{007}, \texttt{09.5}, \texttt{1.5e}, \texttt{24:00} e \texttt{10a} são tratados como candidatos inválidos e geram erro léxico, em vez de serem decompostos em sequências aparentemente válidas.
+
+\section{Localização dos erros}
+
+A classe \texttt{LexicalError} registra linha, coluna, lexema e motivo. O lexer atualiza essas posições ao consumir caracteres, preservando informação útil inclusive após linhas vazias, tabulações e terminações de linha CRLF.
+
+\section{Interface de execução}
+
+A aplicação pode receber um arquivo \texttt{.min} pela linha de comando ou solicitar uma linha de código quando executada sem arquivo. A entrada vazia recebe mensagem controlada. Em caso de erro léxico, a execução informa posição, lexema e motivo.
+
+\section{Exemplos fornecidos}
+
+O arquivo \texttt{examples/valido.min} demonstra declarações, números, string, booleano, horário, condicional, repetição, impressão e comentário. O arquivo \texttt{examples/invalido.min} reúne casos deliberadamente inválidos, como zero à esquerda, decimal com zero à esquerda, notação científica sem expoente completo, horário inválido, string sem fechamento e símbolo desconhecido.

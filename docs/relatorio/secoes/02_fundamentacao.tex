@@ -1,0 +1,31 @@
+\chapter{Fundamentação e metodologia}
+
+\section{Linguagens regulares e Expressões Regulares}
+
+As Expressões Regulares são utilizadas para descrever subconjuntos de cadeias sobre alfabetos finitos. No projeto, a notação formal emprega união, concatenação, fecho de Kleene, fecho positivo, opcionalidade, agrupamento e classes finitas. A sintaxe Python corresponde a essa descrição por meio do módulo \texttt{re}.
+
+A validação em Python utiliza \texttt{re.fullmatch()}, de modo que a cadeia inteira seja comparada ao padrão. Isso evita que um prefixo válido seja confundido com uma cadeia integralmente válida.
+
+\section{Construção de Thompson}
+
+Todos os seis AFN$\varepsilon$ usam a mesma convenção de Thompson definida no projeto: um átomo gera dois estados e uma transição rotulada; concatenações são ligadas por transições $\varepsilon$; uniões usam novos estados inicial e final com transições $\varepsilon$; e o fecho de Kleene usa novas ligações $\varepsilon$ para entrada, saída e retorno.
+
+Classes finitas são apresentadas como rótulos agrupados nos diagramas, mas são expandidas para símbolos individuais no simulador Python. Assim, por exemplo, $D$ representa o conjunto $\{0,1,\ldots,9\}$.
+
+\section{\texorpdfstring{Simulação de AFN$\varepsilon$}{Simulação de AFN epsilon}}
+
+O simulador inicia no $\varepsilon$-fecho do estado inicial. Para cada símbolo da cadeia, aplica a operação \textit{move} sobre os estados ativos e, em seguida, calcula novamente o $\varepsilon$-fecho. Ao fim da cadeia, a aceitação ocorre quando pelo menos um estado ativo pertence ao conjunto de estados finais.
+
+A implementação utiliza \texttt{EPSILON = ""} apenas como marcador interno de transições vazias. A cadeia vazia continua sendo uma entrada distinta do símbolo lógico $\varepsilon$.
+
+\section{Critério de validação}
+
+A validação foi organizada em três níveis:
+
+\begin{enumerate}
+    \item \textbf{casos dirigidos}: pelo menos seis cadeias aceitas e seis rejeitadas por ER, incluindo fronteiras;
+    \item \textbf{validação cruzada}: comparação entre a decisão do AFN$\varepsilon$ e \texttt{re.fullmatch()};
+    \item \textbf{validação estrutural}: comparação exata entre tabelas canônicas, implementação Python e arquivos JFLAP.
+\end{enumerate}
+
+Essa separação evita que uma eventual construção incorreta passe despercebida apenas porque o AFN e a regex foram derivados do mesmo erro. A validação estrutural também impede que dois autômatos diferentes, mas semanticamente equivalentes, sejam tratados como a mesma construção.

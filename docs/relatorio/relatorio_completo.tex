@@ -1,0 +1,996 @@
+\documentclass[12pt,a4paper,oneside]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{lmodern}
+\usepackage{geometry}
+\geometry{left=3cm,right=2cm,top=3cm,bottom=2.5cm}
+\usepackage{setspace}
+\onehalfspacing
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{float}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{caption}
+\hypersetup{colorlinks=true,linkcolor=black,urlcolor=blue,citecolor=black}
+\lstset{basicstyle=\ttfamily\small,breaklines=true,columns=fullflexible,frame=single,showstringspaces=false}
+
+\newcommand{\NomeProjeto}{MiniLang / MiniLexer}
+\newcommand{\Disciplina}{Linguagens Formais e Autômatos}
+\newcommand{\Professor}{[Preencher nome do professor]}
+\newcommand{\Integrantes}{Andrey Lourival Andrade Garcia; Igor Cecim Vilhena}
+\newcommand{\DataEntrega}{30 de setembro de 2026}
+\newcommand{\DQ}{\ensuremath{\mathtt{\char34}}}
+
+\begin{document}
+\begin{titlepage}
+\centering
+\vspace*{1.5cm}
+{\Large \textbf{\Disciplina}\par}
+\vspace{2cm}
+{\Huge \textbf{\NomeProjeto}\par}
+\vspace{0.6cm}
+{\Large Relatório Técnico\par}
+\vspace{1.5cm}
+{\large Analisador léxico com Expressões Regulares e AFN$\varepsilon$\par}
+\vfill
+\begin{flushleft}
+\textbf{Professor:} \Professor
+\par\medskip
+\textbf{Integrantes:}
+\begin{itemize}[leftmargin=1.2cm]
+\item Andrey Lourival Andrade Garcia
+\item Igor Cecim Vilhena
+\end{itemize}
+\end{flushleft}
+\vfill
+{\large [Cidade -- UF]\\\DataEntrega\par}
+\end{titlepage}
+
+\pagenumbering{roman}
+\chapter*{Resumo}
+O presente relatório descreve o desenvolvimento do \textbf{MiniLang / MiniLexer}, uma aplicação de análise léxica construída para relacionar Expressões Regulares, autômatos finitos não determinísticos com transições vazias (AFN$\varepsilon$) e uma implementação computacional funcional. O projeto define seis Expressões Regulares principais para identificadores, inteiros, decimais, notação científica, strings e horários. Para cada expressão foram especificados o alfabeto, a linguagem, a forma formal, a sintaxe em Python, o AFN$\varepsilon$ de Thompson e casos de teste. A implementação inclui um simulador genérico de AFN$\varepsilon$ e um lexer com prioridade lexical, maior lexema, tratamento de comentários, palavras reservadas, operadores, delimitadores e erros com linha e coluna. Na execução final, a suíte automatizada apresentou 122 testes aprovados. As validações cruzadas AFN$\varepsilon$ $\times$ regex não apresentaram divergências nos espaços de busca reduzidos definidos para as seis ERs, e a validação estrutural confirmou 6/6 AFN$\varepsilon$ em Python e 6/6 arquivos JFLAP contra as tabelas canônicas.
+
+\textbf{Palavras-chave:} Expressões Regulares; AFN$\varepsilon$; Thompson; análise léxica; MiniLang; MiniLexer.
+
+\tableofcontents
+\clearpage
+\pagenumbering{arabic}
+
+
+\chapter{Introdução e objetivos}
+
+\section{Contexto}
+
+O projeto \textbf{MiniLang / MiniLexer} foi desenvolvido para a disciplina de Linguagens Formais e Autômatos com o objetivo de relacionar os conceitos de Expressões Regulares e autômatos finitos com uma aplicação computacional funcional. A aplicação implementa um analisador léxico de uma linguagem de programação simplificada denominada MiniLang.
+
+O enunciado da atividade exige uma aplicação com entrada, processamento e saída, no mínimo cinco Expressões Regulares relevantes, tratamento de entradas inválidas, código organizado e, para cada expressão, a apresentação do alfabeto, linguagem reconhecida, ER formal, sintaxe implementada, explicação dos operadores, AFN$\varepsilon$ e testes com cadeias aceitas e rejeitadas. Também estabelece que a ER formal, a sintaxe usada no programa, os testes e o AFN$\varepsilon$ devem representar a mesma linguagem.
+
+\section{Objetivo geral}
+
+Construir e validar um analisador léxico da MiniLang, demonstrando uma cadeia completa de consistência:
+
+\begin{center}
+\texttt{especificação $\rightarrow$ ER formal $\rightarrow$ AFN$\varepsilon$ $\rightarrow$ regex Python $\rightarrow$ testes $\rightarrow$ lexer}
+\end{center}
+
+\section{Objetivos específicos}
+
+\begin{itemize}
+    \item definir seis Expressões Regulares próprias e relevantes para a MiniLang;
+    \item construir os AFN$\varepsilon$ correspondentes pela convenção de Thompson adotada no projeto;
+    \item implementar um simulador genérico de AFN$\varepsilon$;
+    \item implementar o MiniLexer com prioridade e maior lexema;
+    \item validar a correspondência entre AFN$\varepsilon$ e regex Python por testes automatizados;
+    \item validar estruturalmente estados, estados finais, alfabetos e transições dos seis AFN$\varepsilon$;
+    \item disponibilizar os diagramas em JFLAP e Mermaid;
+    \item documentar limitações, resultados e possibilidades de evolução.
+\end{itemize}
+
+\section{Escopo}
+
+A MiniLang é tratada exclusivamente no nível léxico. O projeto não implementa parser, análise semântica, compilação, execução, verificação completa de tipos, geração de código ou máquina virtual. Esta delimitação evita que funcionalidades posteriores alterem o foco acadêmico do trabalho.
+
+
+
+\chapter{Fundamentação e metodologia}
+
+\section{Linguagens regulares e Expressões Regulares}
+
+As Expressões Regulares são utilizadas para descrever subconjuntos de cadeias sobre alfabetos finitos. No projeto, a notação formal emprega união, concatenação, fecho de Kleene, fecho positivo, opcionalidade, agrupamento e classes finitas. A sintaxe Python corresponde a essa descrição por meio do módulo \texttt{re}.
+
+A validação em Python utiliza \texttt{re.fullmatch()}, de modo que a cadeia inteira seja comparada ao padrão. Isso evita que um prefixo válido seja confundido com uma cadeia integralmente válida.
+
+\section{Construção de Thompson}
+
+Todos os seis AFN$\varepsilon$ usam a mesma convenção de Thompson definida no projeto: um átomo gera dois estados e uma transição rotulada; concatenações são ligadas por transições $\varepsilon$; uniões usam novos estados inicial e final com transições $\varepsilon$; e o fecho de Kleene usa novas ligações $\varepsilon$ para entrada, saída e retorno.
+
+Classes finitas são apresentadas como rótulos agrupados nos diagramas, mas são expandidas para símbolos individuais no simulador Python. Assim, por exemplo, $D$ representa o conjunto $\{0,1,\ldots,9\}$.
+
+\section{\texorpdfstring{Simulação de AFN$\varepsilon$}{Simulação de AFN epsilon}}
+
+O simulador inicia no $\varepsilon$-fecho do estado inicial. Para cada símbolo da cadeia, aplica a operação \textit{move} sobre os estados ativos e, em seguida, calcula novamente o $\varepsilon$-fecho. Ao fim da cadeia, a aceitação ocorre quando pelo menos um estado ativo pertence ao conjunto de estados finais.
+
+A implementação utiliza \texttt{EPSILON = ""} apenas como marcador interno de transições vazias. A cadeia vazia continua sendo uma entrada distinta do símbolo lógico $\varepsilon$.
+
+\section{Critério de validação}
+
+A validação foi organizada em três níveis:
+
+\begin{enumerate}
+    \item \textbf{casos dirigidos}: pelo menos seis cadeias aceitas e seis rejeitadas por ER, incluindo fronteiras;
+    \item \textbf{validação cruzada}: comparação entre a decisão do AFN$\varepsilon$ e \texttt{re.fullmatch()};
+    \item \textbf{validação estrutural}: comparação exata entre tabelas canônicas, implementação Python e arquivos JFLAP.
+\end{enumerate}
+
+Essa separação evita que uma eventual construção incorreta passe despercebida apenas porque o AFN e a regex foram derivados do mesmo erro. A validação estrutural também impede que dois autômatos diferentes, mas semanticamente equivalentes, sejam tratados como a mesma construção.
+
+
+
+\chapter{Especificação da MiniLang}
+
+\section{Vocabulário geral}
+
+O alfabeto geral da MiniLang utiliza letras ASCII, dígitos, sublinhado, operadores, delimitadores, ponto decimal, aspas e espaços de acordo com o papel de cada categoria lexical. Palavras reservadas são reconhecidas por uma tabela auxiliar e não constituem uma das seis ERs principais.
+
+\section{Palavras reservadas}
+
+A tabela de palavras reservadas contém:
+
+\begin{center}
+\texttt{program}, \texttt{int}, \texttt{float}, \texttt{string}, \texttt{bool}, \texttt{time},
+
+\texttt{if}, \texttt{else}, \texttt{while}, \texttt{print}, \texttt{true}, \texttt{false}.
+\end{center}
+
+\section{Tokens principais}
+
+Os tokens definidos pelo projeto incluem \texttt{PROGRAM}, tipos, estruturas de controle, \texttt{BOOLEAN}, identificadores, inteiros, decimais, notação científica, strings, horários, operadores e delimitadores. \texttt{WHITESPACE} e \texttt{COMMENT} são classes internas e são descartadas da saída final.
+
+\section{Seis Expressões Regulares principais}
+
+As seis ERs principais são:
+
+\begin{center}
+\small
+\begin{tabular}{|c|r|r|r|r|}
+\toprule
+ER & Estados & Transições & $\varepsilon$ & Rotuladas \\
+\midrule
+ER-01 & 28 & 35 & 27 & 8 \\
+ER-02 & 10 & 12 & 9 & 3 \\
+ER-03 & 18 & 22 & 16 & 6 \\
+ER-04 & 42 & 52 & 40 & 12 \\
+ER-05 & 8 & 9 & 6 & 3 \\
+ER-06 & 16 & 16 & 9 & 7 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+As contagens acima são as contagens definitivas congeladas no projeto.
+
+\section{Ordem de tokenização}
+
+A ordem oficial é:
+
+\begin{enumerate}
+    \item whitespace;
+    \item comentário;
+    \item string;
+    \item operador composto;
+    \item número científico;
+    \item número decimal;
+    \item horário;
+    \item número inteiro;
+    \item identificador ou palavra reservada;
+    \item operador simples;
+    \item delimitador;
+    \item erro léxico.
+\end{enumerate}
+
+A prioridade é combinada com o princípio de maior lexema. Em especial, o lexer não deve transformar um candidato numérico inválido em vários tokens menores.
+
+\section{Regras auxiliares importantes}
+
+Comentários iniciados por \texttt{//} são ignorados antes que \texttt{/} seja tratado como divisão. Operadores compostos \texttt{==}, \texttt{!=}, \texttt{<=} e \texttt{>=} têm prioridade sobre operadores simples. A string é analisada antes das regras internas que poderiam interpretar seus símbolos como operadores. O ponto isolado não é um token válido.
+
+
+
+\section{ER-01 --- Identificador estruturado}
+\subsection{Finalidade}
+Reconhecer identificadores válidos da MiniLang.
+\subsection{Alfabeto}
+$\Sigma_{ID}=L\cup D\cup\{\_\}$, com $L$ para letras e $D$ para dígitos.
+\subsection{Linguagem reconhecida}
+A cadeia começa obrigatoriamente com uma letra; depois disso podem ocorrer caracteres alfanuméricos ou blocos iniciados por sublinhado, sendo que cada sublinhado deve ser seguido por pelo menos um caractere alfanumérico.
+\subsection{ER formal}
+$L(A\mid\_AA^*)^*$, com $A=L\cup D$.
+\subsection{Sintaxe implementada em Python}
+\begin{lstlisting}[language=Python]
+r"[A-Za-z]([A-Za-z0-9]|_[A-Za-z0-9]+)*"
+\end{lstlisting}
+\subsection{Operadores utilizados}
+A união $\mid$ permite escolher entre alternativas; a concatenação liga blocos em sequência; o fecho de Kleene $*$ permite zero ou mais repetições; e o fecho positivo $+$ indica uma ou mais ocorrências no ramo \texttt{\_[A-Za-z0-9]+}. Os parênteses agrupam subexpressões e as classes \texttt{[A-Za-z]} e \texttt{[A-Za-z0-9]} representam conjuntos finitos de símbolos.
+\subsection{Equivalência formal e computacional}
+\begin{center}
+\small
+\begin{tabular}{|p{0.43\textwidth}|p{0.43\textwidth}|}
+\toprule
+Formal & Python \\
+\midrule
+$L$ & \texttt{[A-Za-z]} \\
+$A=L\cup D$ & \texttt{[A-Za-z0-9]} \\
+$\_AA^*$ & \texttt{\_[A-Za-z0-9]+} \\
+$+$ como $AA^*$ & \texttt{+} \\
+\bottomrule
+\end{tabular}
+\end{center}
+\subsection{AFN-epsilon}
+Estado inicial: \texttt{q0}. Estado final: \texttt{q27}. A construção possui 28 estados, 35 transições, 27 transições $\varepsilon$ e 8 transições rotuladas.
+Os diagramas JFLAP e Mermaid correspondentes estão em \texttt{docs/diagramas/}ER-01/. Ambos são derivados da mesma tabela canônica.
+\subsection{Testes dirigidos}
+\begin{center}
+\small
+\begin{tabular}{|p{0.34\textwidth}|c|p{0.43\textwidth}|}
+\toprule
+Cadeia & Esperado & Interpretação \\
+\midrule
+\texttt{a} & Aceita & Pertence à linguagem definida. \\
+\texttt{nome} & Aceita & Pertence à linguagem definida. \\
+\texttt{aluno1} & Aceita & Pertence à linguagem definida. \\
+\texttt{valor\_total} & Aceita & Pertence à linguagem definida. \\
+\texttt{mediaFinal2} & Aceita & Pertence à linguagem definida. \\
+\texttt{a1\_b2} & Aceita & Pertence à linguagem definida. \\
+$\varepsilon$ & Rejeita & Não pertence à linguagem definida. \\
+\texttt{1aluno} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{\_nome} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{nome\_} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{nome\_\_aluno} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{nome-aluno} & Rejeita & Não pertence à linguagem definida. \\
+\bottomrule
+\end{tabular}
+\end{center}
+\subsection{Casos-limite}
+Os casos de fronteira selecionados são: \texttt{a}, $\varepsilon$, \texttt{a\_}, \texttt{a\_\_b}.
+\medskip
+O propósito desses casos é explorar as menores cadeias válidas, limites superiores/inferiores e formas quase válidas que poderiam ser aceitas por uma regra permissiva demais.
+\subsection{Observação sobre palavras reservadas}
+Palavras como \texttt{int} e \texttt{float} possuem formato compatível com a ER de identificadores. A distinção final ocorre pela tabela de palavras reservadas do lexer, após o reconhecimento do lexema.
+
+\section{ER-02 --- Inteiro sem zero à esquerda}
+\subsection{Finalidade}
+Reconhecer inteiros sem zero à esquerda, permitindo somente o literal `0` como zero isolado.
+\subsection{Alfabeto}
+$\Sigma_{INT}=D$, com $D=\{0,1,\ldots,9\}$.
+\subsection{Linguagem reconhecida}
+$L_{INT}=\{0\}\cup ND^*$, onde $N=\{1,\ldots,9\}$.
+\subsection{ER formal}
+$0\mid ND^*$.
+\subsection{Sintaxe implementada em Python}
+\begin{lstlisting}[language=Python]
+r"(0|[1-9][0-9]*)"
+\end{lstlisting}
+\subsection{Operadores utilizados}
+A união $\mid$ separa o caso do zero do caso iniciado por $N$; a concatenação forma a sequência dos símbolos; o fecho $*$ permite qualquer quantidade de dígitos após o primeiro não nulo; e os parênteses agrupam a alternativa no padrão Python.
+\subsection{Equivalência formal e computacional}
+\begin{center}
+\small
+\begin{tabular}{|p{0.43\textwidth}|p{0.43\textwidth}|}
+\toprule
+Formal & Python \\
+\midrule
+$0$ & \texttt{0} \\
+$N$ & \texttt{[1-9]} \\
+$D$ & \texttt{[0-9]} \\
+$D^*$ & \texttt{[0-9]*} \\
+\bottomrule
+\end{tabular}
+\end{center}
+\subsection{AFN-epsilon}
+Estado inicial: \texttt{q0}. Estado final: \texttt{q1}. A construção possui 10 estados, 12 transições, 9 transições $\varepsilon$ e 3 transições rotuladas.
+Os diagramas JFLAP e Mermaid correspondentes estão em \texttt{docs/diagramas/}ER-02/. Ambos são derivados da mesma tabela canônica.
+\subsection{Testes dirigidos}
+\begin{center}
+\small
+\begin{tabular}{|p{0.34\textwidth}|c|p{0.43\textwidth}|}
+\toprule
+Cadeia & Esperado & Interpretação \\
+\midrule
+\texttt{0} & Aceita & Pertence à linguagem definida. \\
+\texttt{1} & Aceita & Pertence à linguagem definida. \\
+\texttt{7} & Aceita & Pertence à linguagem definida. \\
+\texttt{10} & Aceita & Pertence à linguagem definida. \\
+\texttt{2026} & Aceita & Pertence à linguagem definida. \\
+\texttt{999999} & Aceita & Pertence à linguagem definida. \\
+$\varepsilon$ & Rejeita & Não pertence à linguagem definida. \\
+\texttt{00} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{01} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{007} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{12.5} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{-10} & Rejeita & Não pertence à linguagem definida. \\
+\bottomrule
+\end{tabular}
+\end{center}
+\subsection{Casos-limite}
+Os casos de fronteira selecionados são: \texttt{0}, \texttt{1}, \texttt{00}, \texttt{01}, $\varepsilon$.
+\medskip
+O propósito desses casos é explorar as menores cadeias válidas, limites superiores/inferiores e formas quase válidas que poderiam ser aceitas por uma regra permissiva demais.
+
+\section{ER-03 --- Decimal}
+\subsection{Finalidade}
+Reconhecer números decimais cuja parte inteira segue a regra de inteiro e cuja parte fracionária possui ao menos um dígito.
+\subsection{Alfabeto}
+$\Sigma_{DEC}=D\cup\{.\}$.
+\subsection{Linguagem reconhecida}
+A cadeia possui uma parte inteira válida, seguida por ponto e por uma ou mais ocorrências de dígitos.
+\subsection{ER formal}
+$(0\mid ND^*)PDD^*$, com $P=\{.\}$.
+\subsection{Sintaxe implementada em Python}
+\begin{lstlisting}[language=Python]
+r"(0|[1-9][0-9]*)\.[0-9]+"
+\end{lstlisting}
+\subsection{Operadores utilizados}
+A união $\mid$ define as alternativas da parte inteira; a concatenação coloca parte inteira, ponto e parte fracionária em sequência; o ponto é tratado como literal por meio de $P=\{.\}$ e do escape \texttt{\textbackslash.} no código; e o $+$ computacional exige pelo menos um dígito após o ponto.
+\subsection{Equivalência formal e computacional}
+\begin{center}
+\small
+\begin{tabular}{|p{0.43\textwidth}|p{0.43\textwidth}|}
+\toprule
+Formal & Python \\
+\midrule
+$N$ & \texttt{[1-9]} \\
+$D$ & \texttt{[0-9]} \\
+$P$ & \texttt{\textbackslash.} \\
+$DD^*$ & \texttt{[0-9]+} \\
+\bottomrule
+\end{tabular}
+\end{center}
+\subsection{AFN-epsilon}
+Estado inicial: \texttt{q0}. Estado final: \texttt{q17}. A construção possui 18 estados, 22 transições, 16 transições $\varepsilon$ e 6 transições rotuladas.
+Os diagramas JFLAP e Mermaid correspondentes estão em \texttt{docs/diagramas/}ER-03/. Ambos são derivados da mesma tabela canônica.
+\subsection{Testes dirigidos}
+\begin{center}
+\small
+\begin{tabular}{|p{0.34\textwidth}|c|p{0.43\textwidth}|}
+\toprule
+Cadeia & Esperado & Interpretação \\
+\midrule
+\texttt{0.5} & Aceita & Pertence à linguagem definida. \\
+\texttt{0.50} & Aceita & Pertence à linguagem definida. \\
+\texttt{1.5} & Aceita & Pertence à linguagem definida. \\
+\texttt{9.5} & Aceita & Pertence à linguagem definida. \\
+\texttt{10.25} & Aceita & Pertence à linguagem definida. \\
+\texttt{2026.75} & Aceita & Pertence à linguagem definida. \\
+\texttt{00.5} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{09.5} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{.5} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{1.} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{1.5.2} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{-10.5} & Rejeita & Não pertence à linguagem definida. \\
+\bottomrule
+\end{tabular}
+\end{center}
+\subsection{Casos-limite}
+Os casos de fronteira selecionados são: \texttt{0.0}, \texttt{1.0}, \texttt{00.5}, \texttt{.5}, \texttt{1.}.
+\medskip
+O propósito desses casos é explorar as menores cadeias válidas, limites superiores/inferiores e formas quase válidas que poderiam ser aceitas por uma regra permissiva demais.
+
+\section{ER-04 --- Número científico}
+\subsection{Finalidade}
+Reconhecer números em notação científica com parte inteira válida, parte decimal opcional, expoente iniciado por `e` ou `E`, sinal opcional e expoente numérico obrigatório.
+\subsection{Alfabeto}
+$\Sigma_{SCI}=D\cup\{.,e,E,+,-\}$.
+\subsection{Linguagem reconhecida}
+A base é $0$ ou $ND^*$; a parte decimal é opcional; a letra $e$ ou $E$ é obrigatória; o sinal do expoente é opcional; o expoente possui um ou mais dígitos.
+\subsection{ER formal}
+$(0\mid ND^*)(PDD^*\mid\varepsilon)(e\mid E)(+\mid-\mid\varepsilon)DD^*$.
+\subsection{Sintaxe implementada em Python}
+\begin{lstlisting}[language=Python]
+r"(0|[1-9][0-9]*)(\.[0-9]+)?[eE][+-]?[0-9]+"
+\end{lstlisting}
+\subsection{Operadores utilizados}
+A união $\mid$ representa alternativas; a concatenação encadeia a mantissa, o expoente e seus componentes; a opcionalidade $?$ corresponde a $r\mid\varepsilon$ para a parte decimal; as classes \texttt{[eE]} e \texttt{[+-]} representam escolhas finitas; e \texttt{[0-9]+} exige um ou mais dígitos no expoente.
+\subsection{Equivalência formal e computacional}
+\begin{center}
+\small
+\begin{tabular}{|p{0.43\textwidth}|p{0.43\textwidth}|}
+\toprule
+Formal & Python \\
+\midrule
+$PDD^*\mid\varepsilon$ & \texttt{(\textbackslash.[0-9]+)?} \\
+$e\mid E$ & \texttt{[eE]} \\
+$+\mid-\mid\varepsilon$ & \texttt{[+-]?} \\
+$DD^*$ & \texttt{[0-9]+} \\
+\bottomrule
+\end{tabular}
+\end{center}
+\subsection{AFN-epsilon}
+Estado inicial: \texttt{q0}. Estado final: \texttt{q39}. A construção possui 42 estados, 52 transições, 40 transições $\varepsilon$ e 12 transições rotuladas.
+Os diagramas JFLAP e Mermaid correspondentes estão em \texttt{docs/diagramas/}ER-04/. Ambos são derivados da mesma tabela canônica.
+\subsection{Testes dirigidos}
+\begin{center}
+\small
+\begin{tabular}{|p{0.34\textwidth}|c|p{0.43\textwidth}|}
+\toprule
+Cadeia & Esperado & Interpretação \\
+\midrule
+\texttt{1e3} & Aceita & Pertence à linguagem definida. \\
+\texttt{10e2} & Aceita & Pertence à linguagem definida. \\
+\texttt{0e5} & Aceita & Pertence à linguagem definida. \\
+\texttt{1.5e3} & Aceita & Pertence à linguagem definida. \\
+\texttt{9.5E-2} & Aceita & Pertence à linguagem definida. \\
+\texttt{10.25e+4} & Aceita & Pertence à linguagem definida. \\
+$\varepsilon$ & Rejeita & Não pertence à linguagem definida. \\
+\texttt{1e} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{1e+} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{.5e2} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{01e3} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{1.5.2e3} & Rejeita & Não pertence à linguagem definida. \\
+\bottomrule
+\end{tabular}
+\end{center}
+\subsection{Casos-limite}
+Os casos de fronteira selecionados são: \texttt{1e0}, \texttt{0e1}, \texttt{1e}, \texttt{1e+}, \texttt{01e3}.
+\medskip
+O propósito desses casos é explorar as menores cadeias válidas, limites superiores/inferiores e formas quase válidas que poderiam ser aceitas por uma regra permissiva demais.
+
+\section{ER-05 --- Literal de string}
+\subsection{Finalidade}
+Reconhecer literais de string delimitados por aspas duplas, com conteúdo em um conjunto ASCII restrito.
+\subsection{Alfabeto}
+$C=L\cup D\cup\{\text{espaço},\texttt{\_},\texttt{.},\texttt{,},\texttt{!},\texttt{?},\texttt{:},\texttt{;},\texttt{+},\texttt{-},\texttt{*},\texttt{/},\texttt{=},\texttt{<},\texttt{>}\}$ e $\Sigma_{STR}=C\cup\{\text{aspas duplas}\}$.
+\subsection{Linguagem reconhecida}
+$L_{STR}=\{\text{aspas duplas }x\text{ aspas duplas}\mid x\in C^*\}$. A string vazia é válida.
+\subsection{ER formal}
+$\text{aspas duplas }C^*\text{ aspas duplas}$.
+\subsection{Sintaxe implementada em Python}
+\begin{lstlisting}[language=Python]
+r'"[A-Za-z0-9 _.,!?;:+*/=<>-]*"'
+\end{lstlisting}
+\subsection{Operadores utilizados}
+A classe finita do conteúdo representa os símbolos permitidos; o fecho de Kleene $*$ permite zero ou mais caracteres dentro das aspas; e as aspas duplas são delimitadores literais da cadeia. Não há mecanismo de escape nesta versão.
+\subsection{Equivalência formal e computacional}
+\begin{center}
+\small
+\begin{tabular}{|p{0.43\textwidth}|p{0.43\textwidth}|}
+\toprule
+Formal & Python \\
+\midrule
+$C^*$ & \texttt{[A-Za-z0-9 \_.,!?;:+*/=<>-]*} \\
+aspas & \texttt{"..."} \\
+$*$ permite $\varepsilon$ & \texttt{*} \\
+\bottomrule
+\end{tabular}
+\end{center}
+\subsection{AFN-epsilon}
+Estado inicial: \texttt{q0}. Estado final: \texttt{q7}. A construção possui 8 estados, 9 transições, 6 transições $\varepsilon$ e 3 transições rotuladas.
+Os diagramas JFLAP e Mermaid correspondentes estão em \texttt{docs/diagramas/}ER-05/. Ambos são derivados da mesma tabela canônica.
+\subsection{Testes dirigidos}
+\begin{center}
+\small
+\begin{tabular}{|p{0.34\textwidth}|c|p{0.43\textwidth}|}
+\toprule
+Cadeia & Esperado & Interpretação \\
+\midrule
+\texttt{""} & Aceita & Pertence à linguagem definida. \\
+\texttt{"Andrey"} & Aceita & Pertence à linguagem definida. \\
+\texttt{"abc 123"} & Aceita & Pertence à linguagem definida. \\
+\texttt{"a\_b.c"} & Aceita & Pertence à linguagem definida. \\
+\texttt{"hello!"} & Aceita & Pertence à linguagem definida. \\
+\texttt{"12:30"} & Aceita & Pertence à linguagem definida. \\
+$\varepsilon$ & Rejeita & Não pertence à linguagem definida. \\
+\texttt{"abc} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{abc"} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{"a"b"} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{"a\textbackslash\{\}b"} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{"linha
+} & Rejeita & Não pertence à linguagem definida. \\
+\bottomrule
+\end{tabular}
+\end{center}
+\subsection{Casos-limite}
+Os casos de fronteira selecionados são: \texttt{""}, \texttt{"a"}, \texttt{"abc}, \texttt{"a\textbackslash\{\}b"}.
+\medskip
+O propósito desses casos é explorar as menores cadeias válidas, limites superiores/inferiores e formas quase válidas que poderiam ser aceitas por uma regra permissiva demais.
+\subsection{Limitação específica}
+A primeira versão da MiniLang não possui mecanismo de escape. Aspas, barra invertida, tabulação e quebra de linha não pertencem ao conjunto de conteúdo \(C\).
+
+\section{ER-06 --- Literal de horário}
+\subsection{Finalidade}
+Reconhecer literais de horário no formato HH:MM, com horas entre 00 e 23 e minutos entre 00 e 59.
+\subsection{Alfabeto}
+$\Sigma_{TIME}=D\cup\{:\}$.
+\subsection{Linguagem reconhecida}
+A hora pertence a 00--19 ou 20--23; os minutos pertencem a 00--59.
+\subsection{ER formal}
+$((0\mid1)D\mid2(0\mid1\mid2\mid3))Q(0\mid1\mid2\mid3\mid4\mid5)D$, com $Q=\{:\}$.
+\subsection{Sintaxe implementada em Python}
+\begin{lstlisting}[language=Python]
+r"([01][0-9]|2[0-3]):[0-5][0-9]"
+\end{lstlisting}
+\subsection{Operadores utilizados}
+A união $\mid$ define as alternativas para as horas e minutos; a concatenação organiza os dígitos e o separador; as classes \texttt{[01]}, \texttt{[0-3]} e \texttt{[0-5]} representam os conjuntos finitos correspondentes.
+\subsection{Equivalência formal e computacional}
+\begin{center}
+\small
+\begin{tabular}{|p{0.43\textwidth}|p{0.43\textwidth}|}
+\toprule
+Formal & Python \\
+\midrule
+$(0\mid1)$ & \texttt{[01]} \\
+$D$ & \texttt{[0-9]} \\
+$2(0\mid1\mid2\mid3)$ & \texttt{2[0-3]} \\
+$Q$ & \texttt{:} \\
+$(0\mid1\mid2\mid3\mid4\mid5)$ & \texttt{[0-5]} \\
+\bottomrule
+\end{tabular}
+\end{center}
+\subsection{AFN-epsilon}
+Estado inicial: \texttt{q0}. Estado final: \texttt{q15}. A construção possui 16 estados, 16 transições, 9 transições $\varepsilon$ e 7 transições rotuladas.
+Os diagramas JFLAP e Mermaid correspondentes estão em \texttt{docs/diagramas/}ER-06/. Ambos são derivados da mesma tabela canônica.
+\subsection{Testes dirigidos}
+\begin{center}
+\small
+\begin{tabular}{|p{0.34\textwidth}|c|p{0.43\textwidth}|}
+\toprule
+Cadeia & Esperado & Interpretação \\
+\midrule
+\texttt{00:00} & Aceita & Pertence à linguagem definida. \\
+\texttt{09:05} & Aceita & Pertence à linguagem definida. \\
+\texttt{12:30} & Aceita & Pertence à linguagem definida. \\
+\texttt{14:59} & Aceita & Pertence à linguagem definida. \\
+\texttt{23:00} & Aceita & Pertence à linguagem definida. \\
+\texttt{23:59} & Aceita & Pertence à linguagem definida. \\
+$\varepsilon$ & Rejeita & Não pertence à linguagem definida. \\
+\texttt{24:00} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{12:60} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{2:30} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{14:5} & Rejeita & Não pertence à linguagem definida. \\
+\texttt{99:99} & Rejeita & Não pertence à linguagem definida. \\
+\bottomrule
+\end{tabular}
+\end{center}
+\subsection{Casos-limite}
+Os casos de fronteira selecionados são: \texttt{00:00}, \texttt{23:59}, \texttt{24:00}, \texttt{12:60}.
+\medskip
+O propósito desses casos é explorar as menores cadeias válidas, limites superiores/inferiores e formas quase válidas que poderiam ser aceitas por uma regra permissiva demais.
+\subsection{Observação de correção}
+Na faixa de horas 20--23, o segundo dígito pertence ao conjunto \(\{0,1,2,3\}\).
+
+Nos arquivos JFLAP e Mermaid, essa transição aparece como \texttt{[0-3]}. 
+
+
+
+\chapter{Implementação do MiniLexer}
+
+\section{Arquitetura do código}
+
+A implementação foi organizada em módulos:
+
+\begin{itemize}
+    \item \texttt{src/automata.py}: marcador de $\varepsilon$, classe \texttt{AFNe}, simulador e construções dos seis AFN$\varepsilon$;
+    \item \texttt{src/patterns.py}: regexes de referência, palavras reservadas, operadores, delimitadores e conjuntos auxiliares;
+    \item \texttt{src/tokens.py}: tipos e representação de tokens;
+    \item \texttt{src/lexer.py}: análise léxica, controle de posição, maior lexema e erros;
+    \item \texttt{src/main.py}: interface de linha de comando.
+\end{itemize}
+
+\section{Processamento léxico}
+
+O lexer percorre a entrada da esquerda para a direita. Espaços são descartados; comentários de linha iniciados por \texttt{//} são ignorados; strings são consumidas integralmente entre aspas; operadores compostos são reconhecidos antes dos simples; números são analisados como candidatos que podem ser inteiros, decimais, científicos ou horários; identificadores são reconhecidos e posteriormente classificados como palavras reservadas ou \texttt{IDENTIFIER}.
+
+\section{Proteção contra fragmentação}
+
+Um dos pontos relevantes da implementação é evitar que uma entrada inválida seja silenciosamente dividida em tokens menores. Exemplos como \texttt{007}, \texttt{09.5}, \texttt{1.5e}, \texttt{24:00} e \texttt{10a} são tratados como candidatos inválidos e geram erro léxico, em vez de serem decompostos em sequências aparentemente válidas.
+
+\section{Localização dos erros}
+
+A classe \texttt{LexicalError} registra linha, coluna, lexema e motivo. O lexer atualiza essas posições ao consumir caracteres, preservando informação útil inclusive após linhas vazias, tabulações e terminações de linha CRLF.
+
+\section{Interface de execução}
+
+A aplicação pode receber um arquivo \texttt{.min} pela linha de comando ou solicitar uma linha de código quando executada sem arquivo. A entrada vazia recebe mensagem controlada. Em caso de erro léxico, a execução informa posição, lexema e motivo.
+
+\section{Exemplos fornecidos}
+
+O arquivo \texttt{examples/valido.min} demonstra declarações, números, string, booleano, horário, condicional, repetição, impressão e comentário. O arquivo \texttt{examples/invalido.min} reúne casos deliberadamente inválidos, como zero à esquerda, decimal com zero à esquerda, notação científica sem expoente completo, horário inválido, string sem fechamento e símbolo desconhecido.
+
+
+
+\chapter{Testes e validação}
+
+\section{Suíte de testes}
+
+A suíte atual possui \textbf{122 testes coletados}, todos aprovados na execução final com \texttt{pytest -q}.
+
+Os testes cobrem palavras reservadas, identificadores, números, horários, strings, comentários, operadores, maior lexema, erros léxicos, linha/coluna, arquivos de exemplo e execução da interface.
+
+\section{\texorpdfstring{Validação cruzada AFN$\varepsilon$ $\times$ regex}{Validação cruzada AFN epsilon x regex}}
+
+Além da suíte de integração, cada uma das seis ERs possui um validator individual e um validator geral. A validação compara a aceitação do AFN$\varepsilon$ com a aplicação de \texttt{re.fullmatch()} sobre alfabetos reduzidos.
+
+\begin{center}
+\small
+\begin{tabular}{|c|r|r|}
+\toprule
+ER & Cadeias comparadas & Divergências \\
+\midrule
+ER-01 & 3.906 & 0 \\
+ER-02 & 111.111 & 0 \\
+ER-03 & 364 & 0 \\
+ER-04 & 19.608 & 0 \\
+ER-05 & 19.531 & 0 \\
+ER-06 & 177.156 & 0 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{\texorpdfstring{Validação estrutural dos AFN$\varepsilon$}{Validação estrutural dos AFN epsilon}}
+
+A validação estrutural compara a especificação canônica com a implementação Python e com os seis arquivos JFLAP. São verificadas: conjunto de estados, estado inicial, estados finais, alfabeto, todas as transições e contagens de Thompson. Para JFLAP, também são verificados os rótulos explícitos das classes agrupadas.
+
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+ER & Python & JFLAP \\
+\midrule
+ER-01 & OK & OK \\
+ER-02 & OK & OK \\
+ER-03 & OK & OK \\
+ER-04 & OK & OK \\
+ER-05 & OK & OK \\
+ER-06 & OK & OK \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Resultado consolidado: \textbf{6/6 AFN$\varepsilon$ Python + 6/6 JFLAP}, com coincidência exata das tabelas, estados, finais e transições.
+
+\section{Interpretação dos resultados}
+
+Os testes não constituem uma prova abstrata de equivalência para todos os alfabetos possíveis. Eles demonstram ausência de divergência no conjunto de casos dirigidos e nas buscas exaustivas sobre os alfabetos reduzidos definidos para cada ER. A validação estrutural complementa essa evidência ao verificar que a implementação e os arquivos JFLAP preservam a construção documentada.
+
+\section{Pontos de competição no lexer}
+
+Os testes de integração verificam explicitamente situações em que duas regras poderiam competir. Entre elas: comentário versus divisão, operadores compostos versus simples, científico versus decimal, decimal versus inteiro, palavras reservadas versus identificadores e candidatos numéricos potencialmente inválidos. Também são verificados strings contendo símbolos que, fora das aspas, teriam outro significado léxico.
+
+
+
+\chapter{Limitações e discussão}
+
+\section{Limitações da linguagem}
+
+A MiniLang continua restrita ao nível lexical. O reconhecimento de um identificador não determina se ele foi declarado ou qual seu papel semântico. O reconhecimento de um número verifica somente seu formato textual. Horários são validados segundo as faixas 00--23 e 00--59, mas não possuem interpretação contextual.
+
+Strings não possuem escapes na primeira versão. Isso simplifica a construção do AFN$\varepsilon$, mas limita a representação de conteúdos que exijam aspas ou barra invertida internas.
+
+\section{Limitações do lexer}
+
+O MiniLexer não constrói árvore sintática nem interpreta a estrutura do programa. O arquivo pode ser lexicalmente válido sem ser um programa sintaticamente válido em uma linguagem de programação completa.
+
+\section{Melhorias futuras}
+
+Como evolução do projeto, podem ser considerados: introdução de escapes em strings com uma nova ER e correspondente AFN$\varepsilon$; expansão controlada do vocabulário da MiniLang; criação de uma camada de análise sintática; e ampliação das baterias de testes para alfabetos maiores. Essas extensões não fazem parte da versão entregue e, portanto, não foram utilizadas para produzir os resultados atuais.
+
+\section{Decisões de escopo}
+
+Optou-se por não acrescentar funcionalidades apenas para tornar as ERs artificialmente mais complexas. As seis ERs existentes já superam o mínimo exigido e são diretamente justificadas pelo vocabulário lexical da aplicação.
+
+
+
+\chapter{Documentação, reprodutibilidade e uso de IA}
+
+\section{Organização do projeto}
+
+A versão atual do repositório contém código-fonte, testes, exemplos, documentação, declaração de IA, registro de contribuições e diagramas. Cada ER possui um arquivo \texttt{.jff} para JFLAP e um arquivo \texttt{.txt} com Mermaid.
+
+\section{Reprodutibilidade}
+
+A execução dos testes é realizada com:
+
+\begin{lstlisting}[language=bash]
+pip install -r requirements.txt
+pytest -q
+python tests/validate_all.py
+python tests/validate_afne_structure.py
+\end{lstlisting}
+
+As classes utilizadas nos diagramas JFLAP são explicitadas, por exemplo, como \texttt{[A-Za-z]}, \texttt{[0-9]}, \texttt{[1-9]}, \texttt{[0-5]} e \texttt{[0-3]}, enquanto o simulador Python expande os conjuntos para seus símbolos constituintes.
+
+\section{Uso de Inteligência Artificial}
+
+Ferramentas de IA foram utilizadas como apoio na organização e revisão da especificação, análise das ERs e AFN$\varepsilon$, implementação e revisão do simulador e do lexer, criação dos testes, conferência dos diagramas e revisão documental. O projeto mantém uma declaração explícita em \texttt{docs/DECLARACAO\_IA.md}. A responsabilidade pela compreensão, revisão e alteração do material permanece com a equipe.
+
+\section{Registro de contribuições}
+
+O arquivo \texttt{CONTRIBUICOES.md} registra as frentes de trabalho e deve ser preenchido com os nomes reais e as atividades efetivamente realizadas por cada integrante. O registro deve refletir as atividades efetivamente realizadas por Andrey Lourival Andrade Garcia e Igor Cecim Vilhena, sem atribuições inventadas.
+
+
+
+\chapter{Conclusão}
+
+O MiniLang / MiniLexer atingiu uma implementação funcional coerente com o escopo definido para um analisador léxico. O projeto contém seis Expressões Regulares principais, seis construções de AFN$\varepsilon$, simulador genérico, lexer com regras de prioridade e maior lexema, tratamento de erros e suíte de testes integrada.
+
+A verificação final registrou 122 testes automatizados aprovados. As seis validações cruzadas AFN$\varepsilon$ $\times$ regex Python não apresentaram divergências nos alfabetos reduzidos definidos, e a validação estrutural confirmou 6/6 implementações Python e 6/6 arquivos JFLAP contra as tabelas canônicas.
+
+A principal contribuição acadêmica da implementação está na manutenção da correspondência entre a descrição formal e o comportamento computacional. Cada ER é apresentada com sua finalidade, alfabeto, linguagem, notação formal, sintaxe Python, AFN$\varepsilon$, casos dirigidos e limitações, enquanto os testes de integração demonstram como essas regras funcionam em conjunto no MiniLexer.
+
+Como etapa final de entrega, permanecem principalmente os ajustes editoriais externos ao relatório, a consolidação do registro real de contribuições da equipe, a revisão final dos slides e o ensaio da apresentação.
+
+
+
+\chapter{Mapeamento dos artefatos}
+
+Os principais artefatos acadêmicos do repositório são:
+
+\begin{center}
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.38\textwidth}>{\raggedright\arraybackslash}p{0.52\textwidth}}
+\toprule
+Artefato & Finalidade \\
+\midrule
+\path{MiniLang_Guia_Projeto.md} & especificação vigente da linguagem e das ERs \\
+\path{src/automata.py} & simulador e AFN$\varepsilon$ \\
+\path{src/patterns.py} & regexes e tabelas auxiliares \\
+\path{src/lexer.py} & analisador léxico \\
+\path{tests/validate_erXX.py} & validação individual das ERs \\
+\path{tests/validate_afne_structure.py} & validação estrutural dos seis AFN$\varepsilon$ \\
+\path{docs/diagramas/ER-XX/*.jff} & diagramas para JFLAP \\
+\path{docs/diagramas/ER-XX/*mermaid.txt} & diagramas textuais em Mermaid \\
+\path{docs/DECLARACAO_IA.md} & declaração de uso de IA \\
+\path{CONTRIBUICOES.md} & registro de contribuições da equipe \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+
+
+\appendix
+\chapter{Tabelas completas dos AFN-epsilon}
+\section{ER-01 --- Identificador estruturado}
+\small
+\begin{longtable}{|r|c|c|c|}
+\toprule
+No. & Origem & Símbolo & Destino \\
+\midrule
+\endfirsthead
+\toprule
+No. & Origem & Símbolo & Destino \\
+\midrule
+\endhead
+1 & \texttt{q0} & \texttt{[A-Za-z]} & \texttt{q1} \\
+2 & \texttt{q1} & $\varepsilon$ & \texttt{q26} \\
+3 & \texttt{q6} & $\varepsilon$ & \texttt{q2} \\
+4 & \texttt{q6} & $\varepsilon$ & \texttt{q4} \\
+5 & \texttt{q2} & \texttt{[A-Za-z]} & \texttt{q3} \\
+6 & \texttt{q3} & $\varepsilon$ & \texttt{q7} \\
+7 & \texttt{q4} & \texttt{[0-9]} & \texttt{q5} \\
+8 & \texttt{q5} & $\varepsilon$ & \texttt{q7} \\
+9 & \texttt{q8} & \texttt{\_} & \texttt{q9} \\
+10 & \texttt{q9} & $\varepsilon$ & \texttt{q14} \\
+11 & \texttt{q14} & $\varepsilon$ & \texttt{q10} \\
+12 & \texttt{q14} & $\varepsilon$ & \texttt{q12} \\
+13 & \texttt{q10} & \texttt{[A-Za-z]} & \texttt{q11} \\
+14 & \texttt{q11} & $\varepsilon$ & \texttt{q15} \\
+15 & \texttt{q12} & \texttt{[0-9]} & \texttt{q13} \\
+16 & \texttt{q13} & $\varepsilon$ & \texttt{q15} \\
+17 & \texttt{q15} & $\varepsilon$ & \texttt{q16} \\
+18 & \texttt{q16} & $\varepsilon$ & \texttt{q18} \\
+19 & \texttt{q16} & $\varepsilon$ & \texttt{q17} \\
+20 & \texttt{q18} & $\varepsilon$ & \texttt{q20} \\
+21 & \texttt{q18} & $\varepsilon$ & \texttt{q22} \\
+22 & \texttt{q20} & \texttt{[A-Za-z]} & \texttt{q21} \\
+23 & \texttt{q22} & \texttt{[0-9]} & \texttt{q23} \\
+24 & \texttt{q21} & $\varepsilon$ & \texttt{q19} \\
+25 & \texttt{q23} & $\varepsilon$ & \texttt{q19} \\
+26 & \texttt{q19} & $\varepsilon$ & \texttt{q18} \\
+27 & \texttt{q19} & $\varepsilon$ & \texttt{q17} \\
+28 & \texttt{q24} & $\varepsilon$ & \texttt{q6} \\
+29 & \texttt{q24} & $\varepsilon$ & \texttt{q8} \\
+30 & \texttt{q7} & $\varepsilon$ & \texttt{q25} \\
+31 & \texttt{q17} & $\varepsilon$ & \texttt{q25} \\
+32 & \texttt{q26} & $\varepsilon$ & \texttt{q24} \\
+33 & \texttt{q26} & $\varepsilon$ & \texttt{q27} \\
+34 & \texttt{q25} & $\varepsilon$ & \texttt{q24} \\
+35 & \texttt{q25} & $\varepsilon$ & \texttt{q27} \\
+\bottomrule
+\end{longtable}
+\section{ER-02 --- Inteiro sem zero à esquerda}
+\small
+\begin{longtable}{|r|c|c|c|}
+\toprule
+No. & Origem & Símbolo & Destino \\
+\midrule
+\endfirsthead
+\toprule
+No. & Origem & Símbolo & Destino \\
+\midrule
+\endhead
+1 & \texttt{q0} & $\varepsilon$ & \texttt{q2} \\
+2 & \texttt{q0} & $\varepsilon$ & \texttt{q4} \\
+3 & \texttt{q2} & \texttt{0} & \texttt{q3} \\
+4 & \texttt{q3} & $\varepsilon$ & \texttt{q1} \\
+5 & \texttt{q4} & \texttt{[1-9]} & \texttt{q5} \\
+6 & \texttt{q5} & $\varepsilon$ & \texttt{q8} \\
+7 & \texttt{q8} & $\varepsilon$ & \texttt{q6} \\
+8 & \texttt{q8} & $\varepsilon$ & \texttt{q9} \\
+9 & \texttt{q6} & \texttt{[0-9]} & \texttt{q7} \\
+10 & \texttt{q7} & $\varepsilon$ & \texttt{q6} \\
+11 & \texttt{q7} & $\varepsilon$ & \texttt{q9} \\
+12 & \texttt{q9} & $\varepsilon$ & \texttt{q1} \\
+\bottomrule
+\end{longtable}
+\section{ER-03 --- Decimal}
+\small
+\begin{longtable}{|r|c|c|c|}
+\toprule
+No. & Origem & Símbolo & Destino \\
+\midrule
+\endfirsthead
+\toprule
+No. & Origem & Símbolo & Destino \\
+\midrule
+\endhead
+1 & \texttt{q2} & \texttt{0} & \texttt{q3} \\
+2 & \texttt{q0} & $\varepsilon$ & \texttt{q2} \\
+3 & \texttt{q3} & $\varepsilon$ & \texttt{q1} \\
+4 & \texttt{q4} & \texttt{[1-9]} & \texttt{q5} \\
+5 & \texttt{q8} & \texttt{[0-9]} & \texttt{q9} \\
+6 & \texttt{q6} & $\varepsilon$ & \texttt{q8} \\
+7 & \texttt{q6} & $\varepsilon$ & \texttt{q7} \\
+8 & \texttt{q9} & $\varepsilon$ & \texttt{q8} \\
+9 & \texttt{q9} & $\varepsilon$ & \texttt{q7} \\
+10 & \texttt{q5} & $\varepsilon$ & \texttt{q6} \\
+11 & \texttt{q0} & $\varepsilon$ & \texttt{q4} \\
+12 & \texttt{q7} & $\varepsilon$ & \texttt{q1} \\
+13 & \texttt{q10} & \texttt{.} & \texttt{q11} \\
+14 & \texttt{q1} & $\varepsilon$ & \texttt{q10} \\
+15 & \texttt{q12} & \texttt{[0-9]} & \texttt{q13} \\
+16 & \texttt{q11} & $\varepsilon$ & \texttt{q12} \\
+17 & \texttt{q16} & \texttt{[0-9]} & \texttt{q17} \\
+18 & \texttt{q14} & $\varepsilon$ & \texttt{q16} \\
+19 & \texttt{q14} & $\varepsilon$ & \texttt{q17} \\
+20 & \texttt{q17} & $\varepsilon$ & \texttt{q16} \\
+21 & \texttt{q17} & $\varepsilon$ & \texttt{q15} \\
+22 & \texttt{q13} & $\varepsilon$ & \texttt{q14} \\
+\bottomrule
+\end{longtable}
+\section{ER-04 --- Número científico}
+\small
+\begin{longtable}{|r|c|c|c|}
+\toprule
+No. & Origem & Símbolo & Destino \\
+\midrule
+\endfirsthead
+\toprule
+No. & Origem & Símbolo & Destino \\
+\midrule
+\endhead
+1 & \texttt{q2} & \texttt{0} & \texttt{q3} \\
+2 & \texttt{q0} & $\varepsilon$ & \texttt{q2} \\
+3 & \texttt{q3} & $\varepsilon$ & \texttt{q1} \\
+4 & \texttt{q4} & \texttt{[1-9]} & \texttt{q5} \\
+5 & \texttt{q8} & \texttt{[0-9]} & \texttt{q9} \\
+6 & \texttt{q6} & $\varepsilon$ & \texttt{q8} \\
+7 & \texttt{q6} & $\varepsilon$ & \texttt{q7} \\
+8 & \texttt{q9} & $\varepsilon$ & \texttt{q8} \\
+9 & \texttt{q9} & $\varepsilon$ & \texttt{q7} \\
+10 & \texttt{q5} & $\varepsilon$ & \texttt{q6} \\
+11 & \texttt{q0} & $\varepsilon$ & \texttt{q4} \\
+12 & \texttt{q7} & $\varepsilon$ & \texttt{q1} \\
+13 & \texttt{q12} & \texttt{.} & \texttt{q13} \\
+14 & \texttt{q14} & \texttt{[0-9]} & \texttt{q15} \\
+15 & \texttt{q13} & $\varepsilon$ & \texttt{q14} \\
+16 & \texttt{q18} & \texttt{[0-9]} & \texttt{q19} \\
+17 & \texttt{q16} & $\varepsilon$ & \texttt{q18} \\
+18 & \texttt{q16} & $\varepsilon$ & \texttt{q17} \\
+19 & \texttt{q19} & $\varepsilon$ & \texttt{q18} \\
+20 & \texttt{q19} & $\varepsilon$ & \texttt{q17} \\
+21 & \texttt{q15} & $\varepsilon$ & \texttt{q16} \\
+22 & \texttt{q10} & $\varepsilon$ & \texttt{q12} \\
+23 & \texttt{q17} & $\varepsilon$ & \texttt{q11} \\
+24 & \texttt{q20} & $\varepsilon$ & \texttt{q21} \\
+25 & \texttt{q10} & $\varepsilon$ & \texttt{q20} \\
+26 & \texttt{q21} & $\varepsilon$ & \texttt{q11} \\
+27 & \texttt{q1} & $\varepsilon$ & \texttt{q10} \\
+28 & \texttt{q24} & \texttt{e} & \texttt{q25} \\
+29 & \texttt{q22} & $\varepsilon$ & \texttt{q24} \\
+30 & \texttt{q25} & $\varepsilon$ & \texttt{q23} \\
+31 & \texttt{q26} & \texttt{E} & \texttt{q27} \\
+32 & \texttt{q22} & $\varepsilon$ & \texttt{q26} \\
+33 & \texttt{q27} & $\varepsilon$ & \texttt{q23} \\
+34 & \texttt{q11} & $\varepsilon$ & \texttt{q22} \\
+35 & \texttt{q30} & \texttt{+} & \texttt{q31} \\
+36 & \texttt{q28} & $\varepsilon$ & \texttt{q30} \\
+37 & \texttt{q31} & $\varepsilon$ & \texttt{q29} \\
+38 & \texttt{q32} & \texttt{-} & \texttt{q33} \\
+39 & \texttt{q28} & $\varepsilon$ & \texttt{q32} \\
+40 & \texttt{q33} & $\varepsilon$ & \texttt{q29} \\
+41 & \texttt{q34} & $\varepsilon$ & \texttt{q35} \\
+42 & \texttt{q28} & $\varepsilon$ & \texttt{q34} \\
+43 & \texttt{q35} & $\varepsilon$ & \texttt{q29} \\
+44 & \texttt{q23} & $\varepsilon$ & \texttt{q28} \\
+45 & \texttt{q36} & \texttt{[0-9]} & \texttt{q37} \\
+46 & \texttt{q29} & $\varepsilon$ & \texttt{q36} \\
+47 & \texttt{q40} & \texttt{[0-9]} & \texttt{q41} \\
+48 & \texttt{q38} & $\varepsilon$ & \texttt{q40} \\
+49 & \texttt{q38} & $\varepsilon$ & \texttt{q39} \\
+50 & \texttt{q41} & $\varepsilon$ & \texttt{q40} \\
+51 & \texttt{q41} & $\varepsilon$ & \texttt{q39} \\
+52 & \texttt{q37} & $\varepsilon$ & \texttt{q38} \\
+\bottomrule
+\end{longtable}
+\section{ER-05 --- Literal de string}
+\small
+\begin{longtable}{|r|c|c|c|}
+\toprule
+No. & Origem & Símbolo & Destino \\
+\midrule
+\endfirsthead
+\toprule
+No. & Origem & Símbolo & Destino \\
+\midrule
+\endhead
+1 & \texttt{q0} & \texttt{"} & \texttt{q1} \\
+2 & \texttt{q4} & \texttt{[A-Za-z0-9 \_.,!?;:+*/=<>-]} & \texttt{q5} \\
+3 & \texttt{q2} & $\varepsilon$ & \texttt{q4} \\
+4 & \texttt{q2} & $\varepsilon$ & \texttt{q3} \\
+5 & \texttt{q5} & $\varepsilon$ & \texttt{q4} \\
+6 & \texttt{q5} & $\varepsilon$ & \texttt{q3} \\
+7 & \texttt{q1} & $\varepsilon$ & \texttt{q2} \\
+8 & \texttt{q6} & \texttt{"} & \texttt{q7} \\
+9 & \texttt{q3} & $\varepsilon$ & \texttt{q6} \\
+\bottomrule
+\end{longtable}
+\section{ER-06 --- Literal de horário}
+\small
+\begin{longtable}{|r|c|c|c|}
+\toprule
+No. & Origem & Símbolo & Destino \\
+\midrule
+\endfirsthead
+\toprule
+No. & Origem & Símbolo & Destino \\
+\midrule
+\endhead
+1 & \texttt{q2} & \texttt{[01]} & \texttt{q3} \\
+2 & \texttt{q4} & \texttt{[0-9]} & \texttt{q5} \\
+3 & \texttt{q3} & $\varepsilon$ & \texttt{q4} \\
+4 & \texttt{q0} & $\varepsilon$ & \texttt{q2} \\
+5 & \texttt{q5} & $\varepsilon$ & \texttt{q1} \\
+6 & \texttt{q6} & \texttt{2} & \texttt{q7} \\
+7 & \texttt{q8} & \texttt{[0-3]} & \texttt{q9} \\
+8 & \texttt{q7} & $\varepsilon$ & \texttt{q8} \\
+9 & \texttt{q0} & $\varepsilon$ & \texttt{q6} \\
+10 & \texttt{q9} & $\varepsilon$ & \texttt{q1} \\
+11 & \texttt{q10} & \texttt{:} & \texttt{q11} \\
+12 & \texttt{q1} & $\varepsilon$ & \texttt{q10} \\
+13 & \texttt{q12} & \texttt{[0-5]} & \texttt{q13} \\
+14 & \texttt{q14} & \texttt{[0-9]} & \texttt{q15} \\
+15 & \texttt{q13} & $\varepsilon$ & \texttt{q14} \\
+16 & \texttt{q11} & $\varepsilon$ & \texttt{q12} \\
+\bottomrule
+\end{longtable}
+
+
+\chapter*{Referências}
+\addcontentsline{toc}{chapter}{Referências}
+\begin{thebibliography}{9}
+\bibitem{atividade}
+SOUZA, Daniel Leal. \textit{Atividade Prática AV1: Implementação de Expressões Regulares e AFN$\varepsilon$}. Material da disciplina de Linguagens Formais e Autômatos, 2026.
+
+\bibitem{guia}
+\textit{Guia de Sintaxe para Apresentação das Expressões Regulares}. Material de apoio da disciplina de Linguagens Formais e Autômatos, 2026.
+
+\bibitem{spec}
+\textit{MiniLang --- Guia Base e Especificação do Projeto}. Versão vigente do projeto, 2026.
+
+\bibitem{pythonre}
+PYTHON SOFTWARE FOUNDATION. \textit{Regular expression operations}. Documentação do módulo \texttt{re}. Disponível em: \url{https://docs.python.org/3/library/re.html}. Acesso em: 30 set. 2026.
+\end{thebibliography}
+
+\end{document}
