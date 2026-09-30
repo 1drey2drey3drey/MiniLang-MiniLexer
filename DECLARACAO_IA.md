@@ -8,9 +8,14 @@
 
 Ferramentas de Inteligência Artificial foram utilizadas como apoio durante o desenvolvimento do projeto. O uso foi auxiliar e não substitui a autoria, a revisão, a compreensão ou a responsabilidade da equipe sobre o material entregue.
 
+## Ferramentas utilizadas
+
+- **Claude** (Anthropic);
+- **ChatGPT** (OpenAI).
+
 ## Tarefas em que a IA foi utilizada
 
-A ferramenta foi utilizada como apoio nas seguintes atividades:
+As ferramentas foram utilizadas como apoio nas seguintes atividades:
 
 - organização e revisão da especificação da MiniLang;
 - análise das Expressões Regulares e da construção dos AFNε de Thompson;
@@ -19,7 +24,9 @@ A ferramenta foi utilizada como apoio nas seguintes atividades:
 - criação e revisão dos testes automatizados, incluindo validação cruzada AFNε × regex;
 - construção e conferência dos diagramas em JFLAP e Mermaid;
 - organização e revisão da documentação do projeto;
-- identificação de inconsistências e riscos por meio de revisão técnica (pré-mortem).
+- identificação de inconsistências e riscos por meio de revisão técnica (pré-mortem);
+- correções finais do lexer (posição e mensagens de erro) e atualização da documentação;
+- elaboração dos slides da apresentação.
 
 ## Responsabilidade da equipe
 

@@ -166,11 +166,14 @@ pip install -r requirements.txt
 
 ## Uso de Inteligência Artificial
 
-O projeto utilizou IA como apoio em análise da especificação, Expressões Regulares, construção e validação de AFNε, implementação do MiniLexer, testes, diagramas e documentação. O uso, as tarefas apoiadas e a responsabilidade da equipe estão registrados em `DECLARACAO_IA.md`.
+O projeto utilizou IA (Claude e ChatGPT) como apoio em análise da especificação, Expressões Regulares, construção e validação de AFNε, implementação do MiniLexer, testes, diagramas e documentação. O uso, as tarefas apoiadas e a responsabilidade da equipe estão registrados em `DECLARACAO_IA.md`.
 
 ## Registro de contribuições
 
-As contribuições da equipe são registradas em `CONTRIBUICOES.md`. O arquivo deve ser preenchido com os nomes reais e as atividades efetivamente realizadas por cada integrante.
+As contribuições da equipe estão registradas em `CONTRIBUICOES.md`:
+
+- **Andrey Lourival Andrade Garcia** — especificação da MiniLang, AFNε, simulador, MiniLexer, testes, diagramas e documentação;
+- **Igor Cecim Vilhena** — Expressões Regulares, relatório técnico e slides.
 
 ## Relatório técnico
 
@@ -192,8 +195,8 @@ O relatório técnico está em `docs/relatorio/`. O arquivo `main.tex` é o docu
 ✓ README atualizado
 ✓ declaração de uso de IA
 ✓ registro de contribuições criado
-→ preenchimento dos nomes/contribuições reais
+✓ contribuições registradas
 ✓ relatório técnico em LaTeX + PDF
-→ apresentação
+✓ apresentação
 → ensaio final
 ```

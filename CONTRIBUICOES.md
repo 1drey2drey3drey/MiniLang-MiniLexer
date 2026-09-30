@@ -1,15 +1,13 @@
 # Registro de contribuições
 
-Este arquivo registra as frentes de trabalho do projeto MiniLang / MiniLexer. As atividades atribuídas a cada integrante devem refletir a participação efetivamente realizada pela equipe.
+Este arquivo registra as frentes de trabalho do projeto MiniLang / MiniLexer e a participação de cada integrante da equipe.
 
 | Integrante | Contribuições registradas |
 |---|---|
-| Andrey Lourival Andrade Garcia | Detalhar as atividades efetivamente realizadas. |
-| Igor Cecim Vilhena | Detalhar as atividades efetivamente realizadas. |
+| Andrey Lourival Andrade Garcia | Especificação da MiniLang (`MiniLang_Guia_Projeto.md`); construção e validação dos AFNε de Thompson; implementação do simulador de AFNε; implementação do MiniLexer e da interface de linha de comando; testes unitários e integrados; validação estrutural e validação AFNε × regex; diagramas JFLAP e Mermaid; exemplos `.min`; README, fichas explicativas das ERs (`docs/explicacoes/`) e roteiro de comandos da apresentação. |
+| Igor Cecim Vilhena | Definição e formalização das Expressões Regulares (alfabetos, linguagens, notação formal e sintaxe Python); relatório técnico; slides da apresentação. |
 
 ## Frentes de trabalho do projeto
-
-As contribuições podem ser registradas nas seguintes frentes, conforme a participação real de cada integrante:
 
 - especificação da MiniLang e Expressões Regulares;
 - construção e validação dos AFNε;
@@ -22,6 +20,4 @@ As contribuições podem ser registradas nas seguintes frentes, conforme a parti
 - relatório técnico;
 - apresentação e demonstração.
 
-## Observação
-
-O preenchimento deve refletir a participação real de cada integrante. Não devem ser atribuídas atividades que não tenham sido realizadas pela pessoa indicada.
+A apresentação e a demonstração são realizadas por todos os integrantes.

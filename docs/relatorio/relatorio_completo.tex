@@ -22,7 +22,7 @@
 
 \newcommand{\NomeProjeto}{MiniLang / MiniLexer}
 \newcommand{\Disciplina}{Linguagens Formais e Autômatos}
-\newcommand{\Professor}{[Preencher nome do professor]}
+\newcommand{\Professor}{Daniel Leal Souza}
 \newcommand{\Integrantes}{Andrey Lourival Andrade Garcia; Igor Cecim Vilhena}
 \newcommand{\DataEntrega}{30 de setembro de 2026}
 \newcommand{\DQ}{\ensuremath{\mathtt{\char34}}}
@@ -49,12 +49,12 @@
 \end{itemize}
 \end{flushleft}
 \vfill
-{\large [Cidade -- UF]\\\DataEntrega\par}
+{\large Belém -- PA\\\DataEntrega\par}
 \end{titlepage}
 
 \pagenumbering{roman}
 \chapter*{Resumo}
-O presente relatório descreve o desenvolvimento do \textbf{MiniLang / MiniLexer}, uma aplicação de análise léxica construída para relacionar Expressões Regulares, autômatos finitos não determinísticos com transições vazias (AFN$\varepsilon$) e uma implementação computacional funcional. O projeto define seis Expressões Regulares principais para identificadores, inteiros, decimais, notação científica, strings e horários. Para cada expressão foram especificados o alfabeto, a linguagem, a forma formal, a sintaxe em Python, o AFN$\varepsilon$ de Thompson e casos de teste. A implementação inclui um simulador genérico de AFN$\varepsilon$ e um lexer com prioridade lexical, maior lexema, tratamento de comentários, palavras reservadas, operadores, delimitadores e erros com linha e coluna. Na execução final, a suíte automatizada apresentou 122 testes aprovados. As validações cruzadas AFN$\varepsilon$ $\times$ regex não apresentaram divergências nos espaços de busca reduzidos definidos para as seis ERs, e a validação estrutural confirmou 6/6 AFN$\varepsilon$ em Python e 6/6 arquivos JFLAP contra as tabelas canônicas.
+O presente relatório descreve o desenvolvimento do \textbf{MiniLang / MiniLexer}, uma aplicação de análise léxica construída para relacionar Expressões Regulares, autômatos finitos não determinísticos com transições vazias (AFN$\varepsilon$) e uma implementação computacional funcional. O projeto define seis Expressões Regulares principais para identificadores, inteiros, decimais, notação científica, strings e horários. Para cada expressão foram especificados o alfabeto, a linguagem, a forma formal, a sintaxe em Python, o AFN$\varepsilon$ de Thompson e casos de teste. A implementação inclui um simulador genérico de AFN$\varepsilon$ e um lexer com prioridade lexical, maior lexema, tratamento de comentários, palavras reservadas, operadores, delimitadores e erros com linha e coluna. Na execução final, a suíte automatizada apresentou 129 testes aprovados. As validações cruzadas AFN$\varepsilon$ $\times$ regex não apresentaram divergências nos espaços de busca reduzidos definidos para as seis ERs, e a validação estrutural confirmou 6/6 AFN$\varepsilon$ em Python e 6/6 arquivos JFLAP contra as tabelas canônicas.
 
 \textbf{Palavras-chave:} Expressões Regulares; AFN$\varepsilon$; Thompson; análise léxica; MiniLang; MiniLexer.
 
@@ -606,7 +606,7 @@ O arquivo \texttt{examples/valido.min} demonstra declarações, números, string
 
 \section{Suíte de testes}
 
-A suíte atual possui \textbf{122 testes coletados}, todos aprovados na execução final com \texttt{pytest -q}.
+A suíte atual possui \textbf{129 testes coletados}, todos aprovados na execução final com \texttt{pytest -q}.
 
 Os testes cobrem palavras reservadas, identificadores, números, horários, strings, comentários, operadores, maior lexema, erros léxicos, linha/coluna, arquivos de exemplo e execução da interface.
 
@@ -687,7 +687,7 @@ Optou-se por não acrescentar funcionalidades apenas para tornar as ERs artifici
 
 \section{Organização do projeto}
 
-A versão atual do repositório contém código-fonte, testes, exemplos, documentação, declaração de IA, registro de contribuições e diagramas. Cada ER possui um arquivo \texttt{.jff} para JFLAP e um arquivo \texttt{.txt} com Mermaid.
+A versão atual do repositório contém código-fonte, testes, exemplos, documentação, declaração de IA, registro de contribuições e diagramas. Cada ER possui um arquivo \texttt{.jff} para JFLAP e um arquivo \texttt{.md} com Mermaid.
 
 \section{Reprodutibilidade}
 
@@ -704,11 +704,16 @@ As classes utilizadas nos diagramas JFLAP são explicitadas, por exemplo, como \
 
 \section{Uso de Inteligência Artificial}
 
-Ferramentas de IA foram utilizadas como apoio na organização e revisão da especificação, análise das ERs e AFN$\varepsilon$, implementação e revisão do simulador e do lexer, criação dos testes, conferência dos diagramas e revisão documental. O projeto mantém uma declaração explícita em \texttt{docs/DECLARACAO\_IA.md}. A responsabilidade pela compreensão, revisão e alteração do material permanece com a equipe.
+Ferramentas de IA foram utilizadas como apoio na organização e revisão da especificação, análise das ERs e AFN$\varepsilon$, implementação e revisão do simulador e do lexer, criação dos testes, conferência dos diagramas e revisão documental. As ferramentas utilizadas foram o Claude (Anthropic) e o ChatGPT (OpenAI). O projeto mantém uma declaração explícita em \texttt{DECLARACAO\_IA.md}. A responsabilidade pela compreensão, revisão e alteração do material permanece com a equipe.
 
 \section{Registro de contribuições}
 
-O arquivo \texttt{CONTRIBUICOES.md} registra as frentes de trabalho e deve ser preenchido com os nomes reais e as atividades efetivamente realizadas por cada integrante. O registro deve refletir as atividades efetivamente realizadas por Andrey Lourival Andrade Garcia e Igor Cecim Vilhena, sem atribuições inventadas.
+As contribuições de cada integrante estão registradas em \texttt{CONTRIBUICOES.md}:
+
+\begin{itemize}
+\item \textbf{Igor Cecim Vilhena}: definição e formalização das Expressões Regulares (alfabetos, linguagens, notação formal e sintaxe Python), redação do relatório técnico e elaboração dos slides da apresentação.
+\item \textbf{Andrey Lourival Andrade Garcia}: especificação da MiniLang, construção dos AFN$\varepsilon$ de Thompson e do simulador, implementação do MiniLexer, testes automatizados e validação AFN$\varepsilon$ $\times$ regex, diagramas JFLAP e Mermaid, exemplos, README, fichas explicativas das ERs e roteiro de comandos da apresentação.
+\end{itemize}
 
 
 
@@ -716,11 +721,11 @@ O arquivo \texttt{CONTRIBUICOES.md} registra as frentes de trabalho e deve ser p
 
 O MiniLang / MiniLexer atingiu uma implementação funcional coerente com o escopo definido para um analisador léxico. O projeto contém seis Expressões Regulares principais, seis construções de AFN$\varepsilon$, simulador genérico, lexer com regras de prioridade e maior lexema, tratamento de erros e suíte de testes integrada.
 
-A verificação final registrou 122 testes automatizados aprovados. As seis validações cruzadas AFN$\varepsilon$ $\times$ regex Python não apresentaram divergências nos alfabetos reduzidos definidos, e a validação estrutural confirmou 6/6 implementações Python e 6/6 arquivos JFLAP contra as tabelas canônicas.
+A verificação final registrou 129 testes automatizados aprovados. As seis validações cruzadas AFN$\varepsilon$ $\times$ regex Python não apresentaram divergências nos alfabetos reduzidos definidos, e a validação estrutural confirmou 6/6 implementações Python e 6/6 arquivos JFLAP contra as tabelas canônicas.
 
 A principal contribuição acadêmica da implementação está na manutenção da correspondência entre a descrição formal e o comportamento computacional. Cada ER é apresentada com sua finalidade, alfabeto, linguagem, notação formal, sintaxe Python, AFN$\varepsilon$, casos dirigidos e limitações, enquanto os testes de integração demonstram como essas regras funcionam em conjunto no MiniLexer.
 
-Como etapa final de entrega, permanecem principalmente os ajustes editoriais externos ao relatório, a consolidação do registro real de contribuições da equipe, a revisão final dos slides e o ensaio da apresentação.
+Os artefatos finais --- código-fonte, testes, diagramas dos AFN$\varepsilon$, relatório, apresentação e registro de contribuições --- estão disponíveis no repositório do projeto.
 
 
 
@@ -740,8 +745,8 @@ Artefato & Finalidade \\
 \path{tests/validate_erXX.py} & validação individual das ERs \\
 \path{tests/validate_afne_structure.py} & validação estrutural dos seis AFN$\varepsilon$ \\
 \path{docs/diagramas/ER-XX/*.jff} & diagramas para JFLAP \\
-\path{docs/diagramas/ER-XX/*mermaid.txt} & diagramas textuais em Mermaid \\
-\path{docs/DECLARACAO_IA.md} & declaração de uso de IA \\
+\path{docs/diagramas/ER-XX/ER-XX.md} & diagramas textuais em Mermaid \\
+\path{DECLARACAO_IA.md} & declaração de uso de IA \\
 \path{CONTRIBUICOES.md} & registro de contribuições da equipe \\
 \bottomrule
 \end{tabular}
