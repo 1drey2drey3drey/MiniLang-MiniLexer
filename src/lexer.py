@@ -160,7 +160,7 @@ class MiniLexer:
 
             candidate = self.source[start : self.pos]
             if not COMPILED["ER-04"].fullmatch(candidate):
-                raise self._error(candidate, "notação científica inválida; o expoente deve possuir pelo menos um dígito", line, column)
+                raise self._error(candidate, self._scientific_error_reason(candidate), line, column)
 
             self._reject_numeric_contamination(start, line, column)
             return Token(TokenType.SCIENTIFIC, candidate, line, column)
@@ -177,8 +177,19 @@ class MiniLexer:
         if not COMPILED["ER-02"].fullmatch(candidate):
             raise self._error(candidate, "inteiro inválido; zero à esquerda não é permitido", line, column)
 
-        self._reject_numeric_contamination(start)
+        self._reject_numeric_contamination(start, line, column)
         return Token(TokenType.INTEGER, candidate, line, column)
+
+    @staticmethod
+    def _scientific_error_reason(candidate: str) -> str:
+        """Indica qual parte do candidato científico viola a ER-04."""
+        mantissa, _, expoente = candidate.replace("E", "e").partition("e")
+        motivo = "notação científica inválida; "
+        if mantissa.endswith("."):
+            return motivo + "deve haver dígitos após o ponto"
+        if not expoente.lstrip("+-"):
+            return motivo + "o expoente deve possuir pelo menos um dígito"
+        return motivo + "a parte inteira não pode possuir zero à esquerda"
 
     def _reject_numeric_contamination(
         self, start: int, line: int | None = None, column: int | None = None

@@ -176,3 +176,33 @@ def test_erro_mantem_posicao_do_inicio_do_lexema():
     assert erro.column == 3
     assert erro.lexeme == "01.5"
 
+
+@pytest.mark.parametrize(
+    ("source", "coluna", "lexema"),
+    [
+        ("x=12abc;", 3, "12abc"),
+        ("x = 1a", 5, "1a"),
+        ("  7_", 3, "7_"),
+    ],
+)
+def test_inteiro_contaminado_informa_coluna_do_inicio(source, coluna, lexema):
+    with pytest.raises(LexicalError) as exc_info:
+        tokenize(source)
+    erro = exc_info.value
+    assert erro.column == coluna
+    assert erro.lexeme == lexema
+
+
+@pytest.mark.parametrize(
+    ("source", "motivo"),
+    [
+        ("1.e5", "deve haver dígitos após o ponto"),
+        ("1e", "o expoente deve possuir pelo menos um dígito"),
+        ("1.5E+", "o expoente deve possuir pelo menos um dígito"),
+        ("01e3", "a parte inteira não pode possuir zero à esquerda"),
+    ],
+)
+def test_cientifico_invalido_informa_motivo_especifico(source, motivo):
+    with pytest.raises(LexicalError) as exc_info:
+        tokenize(source)
+    assert motivo in exc_info.value.message

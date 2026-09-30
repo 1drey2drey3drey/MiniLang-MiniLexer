@@ -13,19 +13,21 @@ O enunciado também exige que ER formal, código, testes e AFNε representem a m
 ## Estrutura
 
 ```text
-MiniLang_MiniLexer/
-├── MiniLang_Guia_Projeto.md
+MiniLang-MiniLexer/
+├── MiniLang_Guia_Projeto.md      # especificação (fonte de verdade)
 ├── README.md
-├── TESTES_INTEGRADOS.md
+├── COMANDOS_APRESENTACAO.md      # roteiro de comandos da demonstração
+├── CONTRIBUICOES.md              # registro das contribuições
+├── DECLARACAO_IA.md              # declaração de uso de IA
 ├── requirements.txt
 ├── pytest.ini
 ├── src/
 │   ├── __init__.py
-│   ├── automata.py
-│   ├── lexer.py
-│   ├── patterns.py
+│   ├── automata.py               # 6 regex + construção Thompson + simulador AFNε
+│   ├── patterns.py               # tabelas do lexer (palavras reservadas, operadores)
 │   ├── tokens.py
-│   └── main.py
+│   ├── lexer.py                  # MiniLexer
+│   └── main.py                   # interface de linha de comando
 ├── tests/
 │   ├── conftest.py
 │   ├── test_automata.py
@@ -35,41 +37,19 @@ MiniLang_MiniLexer/
 │   ├── test_examples.py
 │   ├── test_integracao_lexer.py
 │   ├── validate_afne_structure.py
-│   ├── validate_er01.py
-│   ├── validate_er02.py
-│   ├── validate_er03.py
-│   ├── validate_er04.py
-│   ├── validate_er05.py
-│   ├── validate_er06.py
+│   ├── validate_er01.py … validate_er06.py
 │   └── validate_all.py
 ├── docs/
-│   ├── CICLO_3_LEXER.md
-│   ├── DECLARACAO_IA.md
-│   ├── ER-02_IMPLEMENTACAO.md
-│   ├── relatorio/
-│   │   ├── main.tex
-│   │   ├── relatorio_completo.tex
-│   │   ├── relatorio.pdf
-│   │   └── secoes/
-│   └── diagramas/
-│       ├── ER-01/
-│       │   ├── ER-01.jff
-│       │   └── ER-01_mermaid.txt
-│       ├── ER-02/
-│       │   ├── ER-02.jff
-│       │   └── ER-02_mermaid.txt
-│       ├── ER-03/
-│       │   ├── ER-03.jff
-│       │   └── ER-03_mermaid.txt
-│       ├── ER-04/
-│       │   ├── ER-04.jff
-│       │   └── ER-04_mermaid.txt
-│       ├── ER-05/
-│       │   ├── ER-05.jff
-│       │   └── ER-05_mermaid.txt
-│       └── ER-06/
-│           ├── ER-06.jff
-│           └── ER-06_mermaid.txt
+│   ├── explicacoes/              # ficha explicativa de cada ER (ER-01.md … ER-06.md)
+│   ├── diagramas/
+│   │   └── ER-01/ … ER-06/
+│   │       ├── ER-XX.jff         # AFNε para o JFLAP
+│   │       └── ER-XX.md          # AFNε em Mermaid (renderiza no GitHub)
+│   └── relatorio/
+│       ├── main.tex
+│       ├── relatorio_completo.tex
+│       ├── relatorio.pdf
+│       └── secoes/
 └── examples/
     ├── valido.min
     └── invalido.min
@@ -122,7 +102,7 @@ python -m src.main
 
 ## Testes
 
-Suíte completa:
+Instale as dependências de teste uma vez (`pip install -r requirements.txt`). Suíte completa:
 
 ```bash
 pytest
@@ -158,8 +138,8 @@ Essa validação compara estados, estado inicial, estados finais, alfabeto, tran
 Os seis diagramas estão em `docs/diagramas/`. Cada ER possui somente:
 
 ```text
-ER-XX.jff            → arquivo para JFLAP
-ER-XX_mermaid.txt    → representação Mermaid
+ER-XX.jff   → arquivo para JFLAP
+ER-XX.md    → representação Mermaid (renderizada diretamente pelo GitHub)
 ```
 
 Os dois arquivos são derivados da mesma tabela canônica de transições. Os rótulos agrupados utilizados na especificação são representados nos `.jff` por classes explícitas, por exemplo `[A-Za-z]`, `[0-9]`, `[1-9]` e `[0-5]`.
@@ -172,7 +152,7 @@ Os testes exaustivos com alfabetos reduzidos verificam o espaço de cadeias efet
 
 ## Limitações atuais
 
-O projeto é exclusivamente léxico. Não possui análise sintática, semântica, compilação ou execução da MiniLang. A regra de strings não possui escapes na primeira versão. A validação dos números verifica formato lexical, não interpretação matemática.
+O projeto é exclusivamente léxico. O MiniLexer interrompe a análise no primeiro erro léxico encontrado (não há recuperação de erros), por isso `examples/invalido.min` exibe apenas o primeiro erro do arquivo. Não possui análise sintática, semântica, compilação ou execução da MiniLang. A regra de strings não possui escapes na primeira versão. A validação dos números verifica formato lexical, não interpretação matemática.
 
 ## Dependências
 
@@ -186,7 +166,7 @@ pip install -r requirements.txt
 
 ## Uso de Inteligência Artificial
 
-O projeto utilizou IA como apoio em análise da especificação, Expressões Regulares, construção e validação de AFNε, implementação do MiniLexer, testes, diagramas e documentação. O uso, as tarefas apoiadas e a responsabilidade da equipe estão registrados em `docs/DECLARACAO_IA.md`.
+O projeto utilizou IA como apoio em análise da especificação, Expressões Regulares, construção e validação de AFNε, implementação do MiniLexer, testes, diagramas e documentação. O uso, as tarefas apoiadas e a responsabilidade da equipe estão registrados em `DECLARACAO_IA.md`.
 
 ## Registro de contribuições
 

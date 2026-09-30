@@ -132,4 +132,6 @@ def main() -> int:
 
 
 if __name__ == "__main__":
+    # Garante a impressão de "ε" e acentos mesmo com saída redirecionada no Windows.
+    sys.stdout.reconfigure(encoding="utf-8")
     raise SystemExit(main())

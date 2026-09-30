@@ -2,6 +2,12 @@
 
 Execute os comandos a partir da **raiz do projeto**.
 
+Antes da apresentação, instale o pytest (necessário para `python -m pytest`):
+
+```powershell
+pip install -r requirements.txt
+```
+
 ## Validar uma ER específica
 
 ```powershell
